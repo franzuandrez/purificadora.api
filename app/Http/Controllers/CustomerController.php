@@ -27,13 +27,20 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            $customer = $this
+                ->customerRepository
+                ->storeFromRequest($request);
 
-        $customer = $this
-            ->customerRepository
-            ->storeFromRequest($request);
+            return response([
+                'customer' => $customer
+            ]);
+        } catch (\Exception $ex) {
 
-        return response([
-            'customer' => $customer
-        ]);
+            return response([
+                'message' => 'El nombre es obligatorio'
+            ], 500);
+        }
+
     }
 }
