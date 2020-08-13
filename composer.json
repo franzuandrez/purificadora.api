@@ -60,8 +60,8 @@
             "@php artisan key:generate --ansi"
         ],
         "post-install-cmd": [
-            "php artisan clear-compiled",
-            "php artisan optimize",
+            "@php artisan clear-compiled",
+            "@php artisan optimize",
             "chmod -R 777 public/"
         ]
     }
