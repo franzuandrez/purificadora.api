@@ -21,6 +21,13 @@ class CustomerController extends Controller
     }
 
 
+    public function index()
+    {
+        return $this
+            ->customerRepository
+            ->all();
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response

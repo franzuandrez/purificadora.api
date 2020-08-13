@@ -15,4 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+Route::get('customers', 'CustomerController@index')->name('customer.index');
 Route::post('customer', 'CustomerController@store')->name('customer.store');

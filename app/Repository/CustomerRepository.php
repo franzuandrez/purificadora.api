@@ -12,6 +12,13 @@ class CustomerRepository
 {
 
 
+    public function all()
+    {
+        $customers = Customer::all();
+
+        return $customers;
+    }
+
     public function storeFromRequest(Request $request)
     {
         $customer = new Customer();
