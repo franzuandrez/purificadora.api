@@ -1,1 +1,1 @@
-# purificadora.api
+Purificadora API
