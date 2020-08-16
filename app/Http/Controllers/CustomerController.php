@@ -23,9 +23,11 @@ class CustomerController extends Controller
 
     public function index()
     {
-        return $this
-            ->customerRepository
-            ->all();
+        return response([
+            'customers' => $this
+                ->customerRepository
+                ->all()
+        ]);
     }
 
     /**
