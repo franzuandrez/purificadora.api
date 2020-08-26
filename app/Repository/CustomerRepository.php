@@ -47,7 +47,7 @@ class CustomerRepository
 
             $this->visitRepository->setCustomer($customer);
             $this->visitRepository->setReason(VisitReason::first());
-            $this->visitRepository->setEmployee(Employee::first());
+
 
             $this
                 ->visitRepository

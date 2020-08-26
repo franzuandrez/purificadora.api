@@ -9,6 +9,7 @@ use App\Employee;
 use App\Visit;
 use App\VisitReason;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class VisitRepository
 {
@@ -78,8 +79,9 @@ class VisitRepository
     public function save($lat, $lon)
     {
 
+
         $visit = new Visit();
-        $visit->employee_id = $this->getEmployee()->employee_id;
+        $visit->employee_id = Auth::user()->employee->employee_id;
         $visit->customer_id = $this->getCustomer()->customer_id;
         $visit->reason_id = $this->getReason()->reason_id;
         $visit->latitude = $lat;
