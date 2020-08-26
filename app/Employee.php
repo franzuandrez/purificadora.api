@@ -22,4 +22,14 @@ class Employee extends Model
     {
         return $this->hasOne(User::class, 'user_id', 'id');
     }
+
+    public function wallets()
+    {
+       return $this->belongsToMany(
+           CustomerWallet::class,
+           'employee_has_customer_wallet',
+           'employee_id',
+           'customer_wallet_id');
+    }
+
 }
