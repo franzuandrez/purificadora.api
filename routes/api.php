@@ -36,3 +36,8 @@ Route::get('customers', 'CustomerController@index')->name('customer.index')
 Route::post('customer', 'CustomerController@store')
     ->name('customer.store')
     ->middleware('auth:api');
+
+
+Route::get('wallets', 'CustomerWalletController@index')
+    ->name('wallets')
+    ->middleware('auth:api');
