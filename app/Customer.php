@@ -25,4 +25,14 @@ class Customer extends Model
     ];
 
 
+    public function lastVisits()
+    {
+        return $this->hasMany(Visit::class, 'customer_id', 'customer_id')
+            ->orderBy('visited_date', 'desc')
+            ->limit(10);
+    }
+
+
+
+
 }
