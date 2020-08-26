@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repository\CustomerRepository;
+use App\Repository\VisitRepository;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -40,6 +41,10 @@ class CustomerController extends Controller
             $customer = $this
                 ->customerRepository
                 ->storeFromRequest($request);
+
+            if ($customer == null) {
+                throw new \Exception("Error al intentar crear cliente");
+            }
 
             return response([
                 'customer' => $customer

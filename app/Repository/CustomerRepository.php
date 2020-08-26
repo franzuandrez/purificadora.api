@@ -5,24 +5,61 @@ namespace App\Repository;
 
 
 use App\Customer;
+use App\Employee;
+use App\VisitReason;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use DB;
 
 class CustomerRepository
 {
 
 
+    /**
+     * @var VisitRepository
+     */
+    private $visitRepository;
+
+    public function __construct(VisitRepository $visitRepository)
+    {
+        $this->visitRepository = $visitRepository;
+    }
+
     public function all()
     {
-        $customers = Customer::all();
+        $customers = Customer::get();
 
         return $customers;
     }
 
+    /**
+     * @param Request $request
+     * @return Customer|null
+     */
     public function storeFromRequest(Request $request)
     {
-        $customer = new Customer();
-        $customer = $this->save($request, $customer);
+
+        try {
+            DB::beginTransaction();
+            $customer = new Customer();
+            $customer = $this->save($request, $customer);
+
+
+            $this->visitRepository->setCustomer($customer);
+            $this->visitRepository->setReason(VisitReason::first());
+            $this->visitRepository->setEmployee(Employee::first());
+
+            $this
+                ->visitRepository
+                ->save($customer->latitude, $customer->longitude);
+
+            DB::commit();
+        } catch (\Exception $ex) {
+
+            DB::rollback();
+            $customer = null;
+        }
+
 
         return $customer;
     }
