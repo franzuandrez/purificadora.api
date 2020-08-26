@@ -13,7 +13,26 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('login', function () {
+    return response()->json(
+        [
+            'success' => false,
+            'message' => 'User not logged'
+        ]
+    );
+})->name('login');
 
 
-Route::get('customers', 'CustomerController@index')->name('customer.index');
-Route::post('customer', 'CustomerController@store')->name('customer.store');
+Route::post('/login', 'UsersController@login');
+Route::post('/register', 'UsersController@register');
+
+
+Route::get('/logout', 'UsersController@logout')
+    ->middleware('auth:api');
+
+Route::get('customers', 'CustomerController@index')->name('customer.index')
+    ->middleware('auth:api');
+
+Route::post('customer', 'CustomerController@store')
+    ->name('customer.store')
+    ->middleware('auth:api');
