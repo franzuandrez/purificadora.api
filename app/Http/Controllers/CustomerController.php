@@ -47,7 +47,7 @@ class CustomerController extends Controller
         } catch (\Exception $ex) {
 
             return response([
-                'message' => 'El nombre es obligatorio'
+                'message' => 'Lo siento, su petición no ha podido ser procesada'
             ], 500);
         }
 
