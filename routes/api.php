@@ -41,3 +41,15 @@ Route::post('customer', 'CustomerController@store')
 Route::get('wallets', 'CustomerWalletController@index')
     ->name('wallets')
     ->middleware('auth:api');
+
+Route::post('wallets', 'CustomerWalletController@store')
+    ->name('wallets.store')
+    ->middleware('auth:api');
+
+Route::patch('wallets/{id}', 'CustomerWalletController@update')
+    ->name('wallets.update')
+    ->middleware('auth:api');
+
+Route::get('wallets/{id}', 'CustomerWalletController@show')
+    ->name('wallets.show')
+    ->middleware('auth:api');

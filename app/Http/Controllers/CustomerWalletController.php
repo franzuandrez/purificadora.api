@@ -27,4 +27,34 @@ class CustomerWalletController extends Controller
         ]);
 
     }
+
+    public function store(Request $request)
+    {
+
+        $wallet = $this->customerWalletRepository->storeFromRequest($request);
+
+        return response([
+            'success' => true,
+            'data' => $wallet,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+
+        $wallet = $this->customerWalletRepository->updateFromRequest($request, $id);
+        return response([
+            'success' => true,
+            'data' => $wallet,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $wallet = $this->customerWalletRepository->findById($id);
+        return response([
+            'success' => true,
+            'data' => $wallet,
+        ]);
+    }
 }
