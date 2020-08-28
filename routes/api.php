@@ -54,3 +54,6 @@ Route::get('wallets/{id}', 'CustomerWalletController@show')
     ->name('wallets.show')
     ->middleware('auth:api');
 
+
+Route::get('products','ProductController@index')
+    ->name('products');
