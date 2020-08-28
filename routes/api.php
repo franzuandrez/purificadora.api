@@ -57,3 +57,12 @@ Route::get('wallets/{id}', 'CustomerWalletController@show')
 
 Route::get('products','ProductController@index')
     ->name('products');
+
+Route::post('products','ProductController@store')
+    ->name('products.store');
+
+Route::patch('products/{id}','ProductController@update')
+    ->name('products.update');
+
+Route::get('products/{id}','ProductController@show')
+    ->name('products.show');
