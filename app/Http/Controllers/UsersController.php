@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Repository\EmployeeRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\User;
+
 class UsersController extends Controller
 {
+    private $employeeRepository;
+
+    public function __construct(EmployeeRepository $employeeRepository)
+    {
+        $this->employeeRepository = $employeeRepository;
+    }
+
     //
     public function login()
     {
@@ -34,7 +44,10 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'username' => 'required|unique:users',
             'password' => 'required',
+            'name' => 'required',
+            'last_name' => 'required',
         ]);
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -42,14 +55,22 @@ class UsersController extends Controller
             ], 401);
         }
         $input = $request->all();
-        $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
+        $user = new User();
+        $user->username = $request->username;
+        $user->password = bcrypt($input['password']);
+        $user->save();
+
+        $this->employeeRepository->storeFromRequest($request,$user);
+
+
         $success['token'] = $user->createToken('appToken')->accessToken;
+
         return response()->json([
             'success' => true,
             'token' => $success,
-            'user' => $user
-        ]);
+            'user' => $user->fresh()
+            ]
+        );
     }
 
     public function logout(Request $res)
