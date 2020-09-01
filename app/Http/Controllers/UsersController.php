@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Repository\EmployeeRepository;
+use App\Repository\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -11,11 +12,21 @@ use App\User;
 
 class UsersController extends Controller
 {
-    private $employeeRepository;
+    private $userRepository;
 
-    public function __construct(EmployeeRepository $employeeRepository)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->employeeRepository = $employeeRepository;
+        $this->userRepository = $userRepository;
+    }
+
+
+    public function index()
+    {
+
+        return response([
+            'success' => true,
+            'data' => $this->userRepository->all()
+        ]);
     }
 
     //
@@ -24,14 +35,14 @@ class UsersController extends Controller
         if (Auth::attempt(['username' => request('username'), 'password' => request('password')])) {
             $user = Auth::user();
             $success['token'] = $user->createToken('appToken')->accessToken;
-            //After successfull authentication, notice how I return json parameters
+
             return response()->json([
                 'success' => true,
                 'token' => $success,
                 'user' => $user
             ]);
         } else {
-            //if authentication is unsuccessfull, notice how I return json parameters
+
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid Username or Password',
@@ -54,21 +65,13 @@ class UsersController extends Controller
                 'message' => $validator->errors(),
             ], 401);
         }
-        $input = $request->all();
-        $user = new User();
-        $user->username = $request->username;
-        $user->password = bcrypt($input['password']);
-        $user->save();
-
-        $this->employeeRepository->storeFromRequest($request,$user);
-
-
+        $user = $this->userRepository->storeFromRequest($request);
         $success['token'] = $user->createToken('appToken')->accessToken;
 
         return response()->json([
-            'success' => true,
-            'token' => $success,
-            'user' => $user->fresh()
+                'success' => true,
+                'token' => $success,
+                'user' => $user->refresh()
             ]
         );
     }
@@ -89,5 +92,27 @@ class UsersController extends Controller
                 'message' => 'Unable to Logout'
             ]);
         }
+    }
+
+    public function show($id)
+    {
+        $user = $this->userRepository->findById( $id);
+
+        return response([
+            'success' => true,
+            'data' => $user
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+
+
+        $user = $this->userRepository->updateFromRequest($request, $id);
+
+        return response([
+            'success' => true,
+            'data' => $user
+        ]);
     }
 }

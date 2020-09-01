@@ -11,6 +11,11 @@ class EmployeeRepository
 {
 
 
+    public function all()
+    {
+
+    }
+
     public function storeFromRequest(Request $request, User $user)
     {
 
@@ -20,6 +25,21 @@ class EmployeeRepository
 
         return $employee;
 
+    }
+
+    public function updateFromRequest(Request $request, $id)
+    {
+
+        $employee = $this->findById($id);
+        $employee = $this->save($employee, $request->all());
+
+        return $employee;
+    }
+
+    public function findById($id)
+    {
+
+        return Employee::findOrFail($id);
     }
 
     private function save(Employee $employee, array $attributes)

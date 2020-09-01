@@ -23,6 +23,9 @@ Route::get('login', function () {
 })->name('login');
 
 
+Route::get('/users', 'UsersController@index');
+Route::get('/users/{id}', 'UsersController@show');
+Route::patch('/users/{id}', 'UsersController@update');
 Route::post('/login', 'UsersController@login');
 Route::post('/register', 'UsersController@register');
 
