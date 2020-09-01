@@ -69,3 +69,10 @@ Route::patch('products/{id}','ProductController@update')
 
 Route::get('products/{id}','ProductController@show')
     ->name('products.show');
+
+
+
+Route::get('visit_reason','VisitReasonController@index');
+Route::post('visit_reason','VisitReasonController@store');
+Route::patch('visit_reason/{id}','VisitReasonController@update');
+Route::get('visit_reason/{id}','VisitReasonController@show');
