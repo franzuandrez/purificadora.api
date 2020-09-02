@@ -60,3 +60,6 @@ Route::get('visit_reason', 'VisitReasonController@index');
 Route::post('visit_reason', 'VisitReasonController@store');
 Route::patch('visit_reason/{id}', 'VisitReasonController@update');
 Route::get('visit_reason/{id}', 'VisitReasonController@show');
+
+
+Route::post('sales', 'SalesController@store')->name('sales.store')->middleware('auth:api');

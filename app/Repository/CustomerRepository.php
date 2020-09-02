@@ -10,6 +10,7 @@ use App\VisitReason;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class CustomerRepository
 {
@@ -75,6 +76,31 @@ class CustomerRepository
         $customer->last_date_visited = Carbon::now();
         $customer->save();
         return $customer;
+    }
+
+    public function findById($id)
+    {
+        return Customer::findOrFail($id);
+    }
+
+
+
+    public function generate_sales(Request $request, bool $is_new_customer = false)
+    {
+        $customer = null;
+        if ($is_new_customer) {
+            $customer = $this->storeFromRequest($request);
+        } else {
+            $customer = $this->findById($request->customer_id);
+        }
+
+        $this->visitRepository->setCustomer($customer);
+        $this->visitRepository->setReason(VisitReason::find(2));
+        $this->visitRepository->save($request->latitude, $request->longitude);
+
+        return  $this->visitRepository->sales($request->sales_detail);
+
+
     }
 
 }
