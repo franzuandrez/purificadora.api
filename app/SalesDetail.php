@@ -11,6 +11,7 @@ class SalesDetail extends Model
 
     protected $primaryKey = 'id';
     protected $table = 'sales_detail';
+    public $timestamps = false;
 
     protected $fillable = [
         'product_id',
@@ -21,6 +22,8 @@ class SalesDetail extends Model
         'special_offer_id',
         'sales_id'
     ];
+
+    protected $with = ['product'];
 
     public function sales()
     {
