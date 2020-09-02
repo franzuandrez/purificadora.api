@@ -11,6 +11,14 @@ class Sales extends Model
     protected $primaryKey = 'sales_id';
     protected $table = 'sales';
 
+    public $timestamps = false;
+
+
+    protected $with = [
+        'visit',
+        'detail'
+    ];
+
     protected $fillable = [
         'visit_id',
         'total'
