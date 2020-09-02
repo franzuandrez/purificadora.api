@@ -23,56 +23,40 @@ Route::get('login', function () {
 })->name('login');
 
 
-Route::get('/users', 'UsersController@index');
-Route::get('/users/{id}', 'UsersController@show');
-Route::patch('/users/{id}', 'UsersController@update');
+Route::get('/users', 'UsersController@index')
+    ->middleware('auth:api');
+Route::get('/users/{id}', 'UsersController@show')
+    ->middleware('auth:api');
+Route::patch('/users/{id}', 'UsersController@update')
+    ->middleware('auth:api');
+Route::get('/logout', 'UsersController@logout')
+    ->middleware('auth:api');
 Route::post('/login', 'UsersController@login');
 Route::post('/register', 'UsersController@register');
 
 
-Route::get('/logout', 'UsersController@logout')
-    ->middleware('auth:api');
-
 Route::get('customers', 'CustomerController@index')->name('customer.index')
     ->middleware('auth:api');
-
-Route::post('customer', 'CustomerController@store')
-    ->name('customer.store');
+Route::post('customer', 'CustomerController@store')->name('customer.store');
 
 
-
-Route::get('wallets', 'CustomerWalletController@index')
-    ->name('wallets')
+Route::get('wallets', 'CustomerWalletController@index')->name('wallets')
     ->middleware('auth:api');
-
-Route::post('wallets', 'CustomerWalletController@store')
-    ->name('wallets.store')
+Route::post('wallets', 'CustomerWalletController@store')->name('wallets.store')
     ->middleware('auth:api');
-
-Route::patch('wallets/{id}', 'CustomerWalletController@update')
-    ->name('wallets.update')
+Route::patch('wallets/{id}', 'CustomerWalletController@update')->name('wallets.update')
     ->middleware('auth:api');
-
-Route::get('wallets/{id}', 'CustomerWalletController@show')
-    ->name('wallets.show')
+Route::get('wallets/{id}', 'CustomerWalletController@show')->name('wallets.show')
     ->middleware('auth:api');
 
 
-Route::get('products','ProductController@index')
-    ->name('products');
-
-Route::post('products','ProductController@store')
-    ->name('products.store');
-
-Route::patch('products/{id}','ProductController@update')
-    ->name('products.update');
-
-Route::get('products/{id}','ProductController@show')
-    ->name('products.show');
+Route::get('products', 'ProductController@index')->name('products');
+Route::post('products', 'ProductController@store')->name('products.store');
+Route::patch('products/{id}', 'ProductController@update')->name('products.update');
+Route::get('products/{id}', 'ProductController@show')->name('products.show');
 
 
-
-Route::get('visit_reason','VisitReasonController@index');
-Route::post('visit_reason','VisitReasonController@store');
-Route::patch('visit_reason/{id}','VisitReasonController@update');
-Route::get('visit_reason/{id}','VisitReasonController@show');
+Route::get('visit_reason', 'VisitReasonController@index');
+Route::post('visit_reason', 'VisitReasonController@store');
+Route::patch('visit_reason/{id}', 'VisitReasonController@update');
+Route::get('visit_reason/{id}', 'VisitReasonController@show');
