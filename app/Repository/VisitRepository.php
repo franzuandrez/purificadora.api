@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Customer;
 use App\Employee;
+use App\Sales;
+use App\SalesDetail;
 use App\Visit;
 use App\VisitReason;
 use Carbon\Carbon;
@@ -14,6 +16,40 @@ use Illuminate\Support\Facades\Auth;
 class VisitRepository
 {
 
+
+    public function __construct(SalesRepository $salesRepository)
+    {
+
+        $this->salesRepository = $salesRepository;
+
+    }
+
+
+    /**
+     * @var Visit|null
+     */
+    private $visit = null;
+
+    /**
+     * @return Visit|null
+     */
+    public function getVisit(): ?Visit
+    {
+        return $this->visit;
+    }
+
+    /**
+     * @param Visit|null $visit
+     */
+    public function setVisit(?Visit $visit): void
+    {
+        $this->visit = $visit;
+    }
+
+    /**
+     * @var SalesRepository
+     */
+    private $salesRepository;
     /**
      * @var Customer|null
      */
@@ -89,8 +125,32 @@ class VisitRepository
         $visit->visited_date = Carbon::now();
         $visit->save();
 
+        $this->visit = $visit;
         return $visit;
 
+    }
+
+
+    /**
+     * @param array $detail
+     * @return Sales
+     */
+    public function sales(array $detail)
+    {
+
+        $sales_detail = collect($detail)->map(function ($item) {
+            return new SalesDetail([
+                'product_id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'price' =>$item['price'],
+                'unit_price_discount'=> $item['unit_price_discount'],
+                'subtotal'=>$item['subtotal'],
+                'total'=>$item['total'],
+            ]);
+        });
+        $sales = $this->salesRepository->generate($this->visit, $sales_detail);
+
+        return $sales;
     }
 
 
