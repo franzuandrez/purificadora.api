@@ -14,4 +14,11 @@ class VisitReason extends Model
     protected $fillable = [
         'description'
     ];
+
+    public function format()
+    {
+        return [
+            'description' => $this->description
+        ];
+    }
 }
