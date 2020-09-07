@@ -25,11 +25,19 @@ class Employee extends Model
 
     public function wallets()
     {
-       return $this->belongsToMany(
-           CustomerWallet::class,
-           'employee_has_customer_wallet',
-           'employee_id',
-           'customer_wallet_id');
+        return $this->belongsToMany(
+            CustomerWallet::class,
+            'employee_has_customer_wallet',
+            'employee_id',
+            'customer_wallet_id');
+    }
+
+    public function format()
+    {
+        return [
+            'name'=>$this->name,
+            'last_name'=>$this->last_name
+        ];
     }
 
 }
