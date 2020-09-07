@@ -34,4 +34,12 @@ class Sales extends Model
         return $this->hasMany(SalesDetail::class, 'sales_id', 'sales_id');
     }
 
+    public function format()
+    {
+        return [
+            'total' => $this->attributes['total'],
+            'visit' => $this->visit->format()
+        ];
+    }
+
 }
