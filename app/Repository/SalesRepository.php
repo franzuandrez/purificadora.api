@@ -26,11 +26,21 @@ class SalesRepository
         $sales->save();
 
 
-
         $sales->detail()->saveMany($sales_detail);
 
 
         return $sales->fresh();
+
+    }
+
+
+    public function all()
+    {
+
+        return Sales::get()
+            ->map(function ($item) {
+                return $item->format();
+            });
 
     }
 
