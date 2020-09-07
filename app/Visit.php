@@ -20,6 +20,10 @@ class Visit extends Model
         'longitude'
     ];
 
+    protected $dates = [
+        'visited_date'
+    ];
+
     public function customer()
     {
 
@@ -35,6 +39,18 @@ class Visit extends Model
     public function reason()
     {
         return $this->belongsTo(VisitReason::class, 'reason_id', 'reason_id');
+    }
+
+    public function format()
+    {
+        return [
+            'visited_date' => $this->visited_date->format('d/m/Y H:i:s'),
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'customer' => $this->customer->format(),
+            'employee' => $this->employee->format(),
+            'reason' => $this->reason->format()
+        ];
     }
 
 }
