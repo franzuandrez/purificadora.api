@@ -32,7 +32,15 @@ class Customer extends Model
             ->limit(10);
     }
 
-
+    public function format()
+    {
+        return [
+            'name' => $this->name,
+            'last_name' => $this->last_name,
+            'nickname' => $this->nickname,
+            'address' => $this->address
+        ];
+    }
 
 
 }
