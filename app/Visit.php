@@ -20,6 +20,9 @@ class Visit extends Model
         'longitude'
     ];
 
+    protected $with = [
+        'borrowedCarboys'
+    ];
     protected $dates = [
         'visited_date'
     ];
@@ -41,6 +44,11 @@ class Visit extends Model
         return $this->belongsTo(VisitReason::class, 'reason_id', 'reason_id');
     }
 
+    public function borrowedCarboys()
+    {
+        return $this->hasMany(BorrowedCarboy::class, 'visit_id', 'visit_id');
+    }
+
     public function format()
     {
         return [
@@ -52,5 +60,6 @@ class Visit extends Model
             'reason' => $this->reason->format()
         ];
     }
+
 
 }

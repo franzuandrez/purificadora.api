@@ -64,3 +64,4 @@ Route::get('visit_reason/{id}', 'VisitReasonController@show');
 
 Route::post('sales', 'SalesController@store')->name('sales.store')->middleware('auth:api');
 Route::get('sales', 'SalesController@index')->name('sales')->middleware('auth:api');
+

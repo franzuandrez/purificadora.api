@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+
 class Customer extends Model
 {
     //
@@ -27,18 +28,48 @@ class Customer extends Model
 
     public function lastVisits()
     {
-        return $this->hasMany(Visit::class, 'customer_id', 'customer_id')
+        return $this->visits()
             ->orderBy('visited_date', 'desc')
             ->limit(10);
+    }
+
+    public function visits()
+    {
+        return $this->hasMany(Visit::class, 'customer_id', 'customer_id');
+
+    }
+
+
+    public function borrowed_carboys()
+    {
+        return
+            $this->visits()
+                ->whereHas('borrowedCarboys', function (Builder $query) {
+                    return $query->where('type', 'B');
+                });
+
+    }
+
+
+    public function retured_carboys()
+    {
+        return
+            $this->visits()
+                ->whereHas('borrowedCarboys', function (Builder $query) {
+                    return $query->where('type', 'R');
+                });
     }
 
     public function format()
     {
         return [
+            'customer_id' => $this->customer_id,
             'name' => $this->name,
             'last_name' => $this->last_name,
             'nickname' => $this->nickname,
-            'address' => $this->address
+            'address' => $this->address,
+            'latitude'=>$this->latitude,
+            'longitude'=>$this->longitudes,
         ];
     }
 

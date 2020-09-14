@@ -28,7 +28,7 @@ class CustomerRepository
 
     public function all()
     {
-        $customers = Customer::get();
+        $customers = Customer::get()->map->format();
 
         return $customers;
     }
@@ -84,7 +84,6 @@ class CustomerRepository
     }
 
 
-
     public function generate_sales(Request $request, bool $is_new_customer = false)
     {
         $customer = null;
@@ -98,7 +97,7 @@ class CustomerRepository
         $this->visitRepository->setReason(VisitReason::find(2));
         $this->visitRepository->save($request->latitude, $request->longitude);
 
-        return  $this->visitRepository->sales($request->sales_detail);
+        return $this->visitRepository->sales($request->sales_detail);
 
 
     }
