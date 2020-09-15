@@ -69,7 +69,7 @@ class Customer extends Model
             'nickname' => $this->nickname,
             'address' => $this->address,
             'latitude'=>$this->latitude,
-            'longitude'=>$this->longitudes,
+            'longitude'=>$this->longitude,
         ];
     }
 
