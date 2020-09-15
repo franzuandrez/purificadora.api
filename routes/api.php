@@ -48,6 +48,7 @@ Route::patch('wallets/{id}', 'CustomerWalletController@update')->name('wallets.u
     ->middleware('auth:api');
 Route::get('wallets/{id}', 'CustomerWalletController@show')->name('wallets.show')
     ->middleware('auth:api');
+Route::get('all_wallets', 'CustomerWalletController@wallets');
 
 
 Route::get('products', 'ProductController@index')->name('products');
@@ -64,4 +65,7 @@ Route::get('visit_reason/{id}', 'VisitReasonController@show');
 
 Route::post('sales', 'SalesController@store')->name('sales.store')->middleware('auth:api');
 Route::get('sales', 'SalesController@index')->name('sales')->middleware('auth:api');
+
+
+Route::get('summary', 'SummaryController@index');
 

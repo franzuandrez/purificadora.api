@@ -13,13 +13,20 @@ class CustomerWalletRepository
 {
 
 
-    public function all()
+    public function byUserAuthenticated()
     {
 
         $employee = Employee::where('user_id', Auth::id())
             ->with('wallets')
             ->first();
         $wallets = $employee->wallets;
+
+        return $wallets;
+    }
+
+    public function all()
+    {
+        $wallets = CustomerWallet::with('employees')->get();
 
         return $wallets;
     }

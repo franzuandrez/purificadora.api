@@ -20,7 +20,15 @@ class CustomerWalletController extends Controller
     public function index(Request $request)
     {
 
+        return response([
+            'success' => true,
+            'data' => $this->customerWalletRepository->byUserAuthenticated(),
+        ]);
 
+    }
+
+    public function wallets()
+    {
         return response([
             'success' => true,
             'data' => $this->customerWalletRepository->all(),

@@ -50,4 +50,13 @@ class CustomerWallet extends Model
             'customer_wallet_id',
             'customer_id');
     }
+
+    public function employees()
+    {
+        return $this->belongsToMany(
+            Employee::class,
+            'employee_has_customer_wallet',
+            'customer_wallet_id',
+            'employee_id');
+    }
 }
