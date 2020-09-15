@@ -44,9 +44,14 @@ class Visit extends Model
         return $this->belongsTo(VisitReason::class, 'reason_id', 'reason_id');
     }
 
+    public function sales()
+    {
+        return $this->hasMany(Sales::class, 'visit_id', 'visit_id');
+    }
+
     public function borrowedCarboys()
     {
-        return $this->hasMany(BorrowedCarboy::class, 'visit_id', 'visit_id');
+        return $this->hasOne(BorrowedCarboy::class, 'visit_id', 'visit_id');
     }
 
     public function format()
