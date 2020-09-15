@@ -4,6 +4,23 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Sales
+ *
+ * @property int $sales_id
+ * @property int $visit_id
+ * @property string $total
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SalesDetail[] $detail
+ * @property-read int|null $detail_count
+ * @property-read \App\Visit $visit
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereSalesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sales whereVisitId($value)
+ * @mixin \Eloquent
+ */
 class Sales extends Model
 {
     //
@@ -15,7 +32,6 @@ class Sales extends Model
 
 
     protected $with = [
-        'visit',
         'detail'
     ];
 

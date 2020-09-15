@@ -2,8 +2,43 @@
 
 namespace App;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
+/**
+ * App\Visit
+ *
+ * @property int $visit_id
+ * @property int $employee_id
+ * @property int $customer_id
+ * @property Carbon $visited_date
+ * @property int $reason_id
+ * @property float|null $latitude
+ * @property float|null $longitude
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read BorrowedCarboy|null $borrowedCarboys
+ * @property-read Customer $customer
+ * @property-read Employee $employee
+ * @property-read VisitReason $reason
+ * @property-read Collection|Sales[] $sales
+ * @property-read int|null $sales_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereEmployeeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereLatitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereLongitude($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereReasonId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereVisitId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Visit whereVisitedDate($value)
+ * @mixin Eloquent
+ */
 class Visit extends Model
 {
     //
