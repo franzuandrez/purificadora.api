@@ -37,7 +37,8 @@ Route::post('/register', 'UsersController@register');
 
 Route::get('customers', 'CustomerController@index')->name('customer.index')
     ->middleware('auth:api');
-Route::post('customer', 'CustomerController@store')->name('customer.store');
+Route::post('customer', 'CustomerController@store')->name('customer.store')
+    ->middleware('auth:api');
 
 
 Route::get('wallets', 'CustomerWalletController@index')->name('wallets')
@@ -65,6 +66,8 @@ Route::get('visit_reason/{id}', 'VisitReasonController@show');
 
 Route::post('sales', 'SalesController@store')->name('sales.store')->middleware('auth:api');
 Route::get('sales', 'SalesController@index')->name('sales')->middleware('auth:api');
+
+
 
 
 Route::get('summary', 'SummaryController@index');
