@@ -47,12 +47,15 @@ class CustomerController extends Controller
             }
 
             return response([
+                'success' => true,
                 'customer' => $customer
             ]);
         } catch (\Exception $ex) {
 
             return response([
-                'message' => 'Lo siento, su petición no ha podido ser procesada'
+                'success' => false,
+                'message' => 'Lo siento, su petición no ha podido ser procesada',
+                'error' => $ex->getMessage()
             ], 500);
         }
 

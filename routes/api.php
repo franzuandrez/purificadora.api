@@ -17,8 +17,8 @@ Route::get('login', function () {
     return response()->json(
         [
             'success' => false,
-            'message' => 'User not logged'
-        ]
+            'message' => 'Usuario no logeado'
+        ], 401
     );
 })->name('login');
 
@@ -66,8 +66,6 @@ Route::get('visit_reason/{id}', 'VisitReasonController@show');
 
 Route::post('sales', 'SalesController@store')->name('sales.store')->middleware('auth:api');
 Route::get('sales', 'SalesController@index')->name('sales')->middleware('auth:api');
-
-
 
 
 Route::get('summary', 'SummaryController@index');
