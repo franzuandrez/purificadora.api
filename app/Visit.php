@@ -62,6 +62,10 @@ class Visit extends Model
         'visited_date'
     ];
 
+    protected $casts = [
+        'visited_date' => 'datetime:H:i:s d/m/Y'
+    ];
+
     public function customer()
     {
 
