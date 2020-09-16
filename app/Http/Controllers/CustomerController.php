@@ -25,6 +25,7 @@ class CustomerController extends Controller
     public function index()
     {
         return response([
+            'success' => true,
             'customers' => $this
                 ->customerRepository
                 ->all()
@@ -34,6 +35,7 @@ class CustomerController extends Controller
     /**
      * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @throws \Throwable
      */
     public function store(Request $request)
     {
