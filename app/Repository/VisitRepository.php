@@ -113,11 +113,23 @@ class VisitRepository
 
     public function all()
     {
-        return(Visit::with('customer')
+        return (Visit::with('customer')
             ->with('employee')
             ->with('reason')
-            ->orderBy('visited_date','desc')
+            ->orderBy('visited_date', 'desc')
             ->paginate(15));
+    }
+
+
+    public function findById($id)
+    {
+
+
+        return Visit::whereVisitId($id)->with('customer')
+            ->with('employee')
+            ->with('reason')
+            ->with('sales')
+            ->first();
     }
 
     public function save($lat, $lon)

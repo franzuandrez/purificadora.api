@@ -68,7 +68,7 @@ Route::post('sales', 'SalesController@store')->name('sales.store')->middleware('
 Route::get('sales', 'SalesController@index')->name('sales')->middleware('auth:api');
 
 Route::get('visits', 'VisitsController@index')->name('visits');
-
+Route::get('visits/{id}', 'VisitsController@show')->name('visits.show');
 
 
 Route::get('summary', 'SummaryController@index');

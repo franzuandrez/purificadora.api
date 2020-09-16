@@ -27,5 +27,14 @@ class VisitsController extends Controller
 
     }
 
+    public function show($id)
+    {
+        return response([
+            'success' => true,
+            'data' => $this->visitRepository->findById($id)
+        ]);
+
+    }
+
 
 }
