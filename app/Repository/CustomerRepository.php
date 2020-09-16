@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
 use phpDocumentor\Reflection\Types\Boolean;
+use Throwable;
 
 class CustomerRepository
 {
@@ -36,6 +37,7 @@ class CustomerRepository
     /**
      * @param Request $request
      * @return Customer|null
+     * @throws Throwable
      */
     public function storeFromRequest(Request $request)
     {
@@ -55,10 +57,10 @@ class CustomerRepository
                 ->save($customer->latitude, $customer->longitude);
 
             DB::commit();
-        } catch (\Exception $ex) {
+        } catch (Throwable $th) {
 
             DB::rollback();
-            $customer = null;
+            throw $th;
         }
 
 
