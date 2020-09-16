@@ -85,7 +85,7 @@ class Visit extends Model
 
     public function sales()
     {
-        return $this->hasMany(Sales::class, 'visit_id', 'visit_id');
+        return $this->hasOne(Sales::class, 'visit_id', 'visit_id');
     }
 
     public function borrowedCarboys()
