@@ -16,36 +16,6 @@ use Illuminate\Support\Facades\Auth;
 class VisitRepository
 {
 
-
-    public function __construct(SalesRepository $salesRepository)
-    {
-
-        $this->salesRepository = $salesRepository;
-
-    }
-
-
-    /**
-     * @var Visit|null
-     */
-    private $visit = null;
-
-    /**
-     * @return Visit|null
-     */
-    public function getVisit(): ?Visit
-    {
-        return $this->visit;
-    }
-
-    /**
-     * @param Visit|null $visit
-     */
-    public function setVisit(?Visit $visit): void
-    {
-        $this->visit = $visit;
-    }
-
     /**
      * @var SalesRepository
      */
@@ -62,6 +32,35 @@ class VisitRepository
      * @var VisitReason|null
      */
     private $reason = null;
+
+    /**
+     * @var Visit|null
+     */
+    private $visit = null;
+
+    public function __construct(SalesRepository $salesRepository)
+    {
+
+        $this->salesRepository = $salesRepository;
+
+    }
+
+
+    /**
+     * @return Visit|null
+     */
+    public function getVisit(): ?Visit
+    {
+        return $this->visit;
+    }
+
+    /**
+     * @param Visit|null $visit
+     */
+    public function setVisit(?Visit $visit): void
+    {
+        $this->visit = $visit;
+    }
 
     /**
      * @return Customer|null
@@ -112,6 +111,14 @@ class VisitRepository
     }
 
 
+    public function all()
+    {
+        return(Visit::with('customer')
+            ->with('employee')
+            ->with('reason')
+            ->paginate(2));
+    }
+
     public function save($lat, $lon)
     {
 
@@ -142,10 +149,10 @@ class VisitRepository
             return new SalesDetail([
                 'product_id' => $item['product_id'],
                 'quantity' => $item['quantity'],
-                'price' =>$item['price'],
-                'unit_price_discount'=> $item['unit_price_discount'],
-                'subtotal'=>$item['subtotal'],
-                'total'=>$item['total'],
+                'price' => $item['price'],
+                'unit_price_discount' => $item['unit_price_discount'],
+                'subtotal' => $item['subtotal'],
+                'total' => $item['total'],
             ]);
         });
         $sales = $this->salesRepository->generate($this->visit, $sales_detail);
