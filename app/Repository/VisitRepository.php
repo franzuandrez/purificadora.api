@@ -116,7 +116,8 @@ class VisitRepository
         return(Visit::with('customer')
             ->with('employee')
             ->with('reason')
-            ->paginate(2));
+            ->orderBy('visited_date','desc')
+            ->paginate(15));
     }
 
     public function save($lat, $lon)
