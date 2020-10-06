@@ -1,1 +1,1 @@
-Purificadora API - v2.1
+Purificadora API - v2.2
