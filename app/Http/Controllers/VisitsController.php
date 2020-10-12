@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repository\VisitRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class VisitsController extends Controller
@@ -25,6 +26,29 @@ class VisitsController extends Controller
         ]);
 
 
+    }
+
+    public function store(Request $request)
+    {
+
+
+        $latitude = $request->get('latitude');
+        $longitude = $request->get('longitude');
+        $reason_id = $request->get('reason_id');
+        $customer_id = $request->get('customer_id');
+
+
+        return response([
+            'success' => true,
+            'data' => $this
+                ->visitRepository
+                ->visit_by_reason(
+                    $latitude,
+                    $longitude,
+                    $reason_id,
+                    $customer_id
+                )
+        ]);
     }
 
     public function show($id)

@@ -37,11 +37,16 @@ class VisitRepository
      * @var Visit|null
      */
     private $visit = null;
+    /**
+     * @var ReasonRepository
+     */
+    private $reasonRepository = null;
 
-    public function __construct(SalesRepository $salesRepository)
+    public function __construct(SalesRepository $salesRepository, ReasonRepository $reasonRepository)
     {
 
         $this->salesRepository = $salesRepository;
+        $this->reasonRepository = $reasonRepository;
 
     }
 
@@ -132,7 +137,7 @@ class VisitRepository
             ->first();
     }
 
-    public function save($lat, $lon)
+    public function save(float $lat, float $lon)
     {
 
 
@@ -145,9 +150,20 @@ class VisitRepository
         $visit->visited_date = Carbon::now();
         $visit->save();
 
+
         $this->visit = $visit;
+
         return $visit;
 
+    }
+
+    public function visit_by_reason(float $lat, float $lon, $reason_id, $customer_id)
+    {
+
+        $reason = $this->reasonRepository->findById($reason_id);
+        $this->setCustomer(Customer::find($customer_id));
+        $this->setReason($reason);
+        return $this->save($lat, $lon);
     }
 
 
@@ -155,7 +171,8 @@ class VisitRepository
      * @param array $detail
      * @return Sales
      */
-    public function sales(array $detail)
+    public
+    function sales(array $detail)
     {
 
         $sales_detail = collect($detail)->map(function ($item) {
