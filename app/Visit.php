@@ -2,6 +2,7 @@
 
 namespace App;
 
+
 use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +20,7 @@ use Illuminate\Support\Carbon;
  * @property float|null $longitude
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read BorrowedCarboy|null $borrowedCarboys
+ * @property-read CarboyMovement|null $borrowedCarboys
  * @property-read Customer $customer
  * @property-read Employee $employee
  * @property-read VisitReason $reason
@@ -56,7 +57,7 @@ class Visit extends Model
     ];
 
     protected $with = [
-        'borrowedCarboys'
+        'carboys_movements'
     ];
     protected $dates = [
         'visited_date'
@@ -88,9 +89,9 @@ class Visit extends Model
         return $this->hasOne(Sales::class, 'visit_id', 'visit_id');
     }
 
-    public function borrowedCarboys()
+    public function carboys_movements()
     {
-        return $this->hasOne(BorrowedCarboy::class, 'visit_id', 'visit_id');
+        return $this->hasOne(CarboyMovement::class, 'visit_id', 'visit_id');
     }
 
     public function format()

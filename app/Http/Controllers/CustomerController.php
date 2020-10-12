@@ -32,6 +32,16 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        return response([
+            'success' => true,
+            'data' => $this
+                ->customerRepository
+                ->getWithSalesInfo($id)
+        ]);
+    }
+
     /**
      * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response

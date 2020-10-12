@@ -5,6 +5,7 @@ namespace App;
 use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
 
@@ -59,11 +60,12 @@ class Customer extends Model
     ];
 
 
+
     public function lastVisits()
     {
         return $this->visits()
             ->orderBy('visited_date', 'desc')
-            ->limit(10);
+            ->limit(5);
     }
 
     public function visits()
@@ -73,25 +75,19 @@ class Customer extends Model
     }
 
 
+    public function carboys_movements()
+    {
+        return
+            $this->visits()
+                ->has('carboys_movements');
+
+    }
+
     public function borrowed_carboys()
     {
-        return
-            $this->visits()
-                ->whereHas('borrowedCarboys', function (Builder $query) {
-                    return $query->where('type', 'B');
-                });
 
     }
 
-
-    public function retured_carboys()
-    {
-        return
-            $this->visits()
-                ->whereHas('borrowedCarboys', function (Builder $query) {
-                    return $query->where('type', 'R');
-                });
-    }
 
     public function format()
     {
@@ -101,8 +97,9 @@ class Customer extends Model
             'last_name' => $this->last_name,
             'nickname' => $this->nickname,
             'address' => $this->address,
-            'latitude'=>$this->latitude,
-            'longitude'=>$this->longitude,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+
         ];
     }
 

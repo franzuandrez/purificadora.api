@@ -5,12 +5,10 @@ namespace App\Repository;
 
 
 use App\Customer;
-use App\Employee;
 use App\VisitReason;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
-use phpDocumentor\Reflection\Types\Boolean;
 use Throwable;
 
 class CustomerRepository
@@ -47,9 +45,8 @@ class CustomerRepository
             $customer = new Customer();
             $customer = $this->save($request, $customer);
 
-
             $this->visitRepository->setCustomer($customer);
-            $this->visitRepository->setReason(VisitReason::first());
+            $this->visitRepository->setReason(VisitReason::whereReasonId(3)->first());
 
 
             $this
@@ -85,6 +82,19 @@ class CustomerRepository
         return Customer::findOrFail($id);
     }
 
+    public function getWithSalesInfo($id)
+    {
+
+        $customer = Customer::with('lastVisits')
+            ->with('carboys_movements')
+            ->with('lastVisits.reason')
+            ->with('lastVisits.sales')
+            ->with('lastVisits.sales')
+            ->with('lastVisits.employee')
+            ->find($id);
+        return $customer;
+    }
+
 
     public function generate_sales(Request $request, bool $is_new_customer = false)
     {
@@ -97,7 +107,10 @@ class CustomerRepository
 
         $this->visitRepository->setCustomer($customer);
         $this->visitRepository->setReason(VisitReason::find(2));
-        $this->visitRepository->save($request->latitude, $request->longitude);
+        $this->visitRepository->setBorrowedCarboys($request->get('borrowed_carboys'));
+        $this->visitRepository->setReturnedCarboys($request->get('returned_carboys'));
+        $this->visitRepository->setObservations($request->get('observations'));
+        $this->visitRepository->save($request->get('latitude'), $request->get('longitude'));
 
         return $this->visitRepository->sales($request->sales_detail);
 

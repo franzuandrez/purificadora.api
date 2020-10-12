@@ -32,10 +32,7 @@ class VisitsController extends Controller
     {
 
 
-        $latitude = $request->get('latitude');
-        $longitude = $request->get('longitude');
-        $reason_id = $request->get('reason_id');
-        $customer_id = $request->get('customer_id');
+
 
 
         return response([
@@ -43,10 +40,7 @@ class VisitsController extends Controller
             'data' => $this
                 ->visitRepository
                 ->visit_by_reason(
-                    $latitude,
-                    $longitude,
-                    $reason_id,
-                    $customer_id
+                    $request
                 )
         ]);
     }

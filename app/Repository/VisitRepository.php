@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\CarboyMovement;
 use App\Customer;
 use App\Employee;
 use App\Sales;
@@ -16,6 +17,60 @@ use Illuminate\Support\Facades\Auth;
 class VisitRepository
 {
 
+
+    private $observations = null;
+
+    /**
+     * @return null
+     */
+    public function getObservations()
+    {
+        return $this->observations;
+    }
+
+    /**
+     * @param null $observations
+     */
+    public function setObservations($observations): void
+    {
+        $this->observations = $observations;
+    }
+
+    private $borrowed_carboys = 0;
+
+    /**
+     * @return int
+     */
+    public function getBorrowedCarboys(): int
+    {
+        return $this->borrowed_carboys;
+    }
+
+    /**
+     * @param int $borrowed_carboys
+     */
+    public function setBorrowedCarboys(int $borrowed_carboys): void
+    {
+        $this->borrowed_carboys = $borrowed_carboys;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReturnedCarboys(): int
+    {
+        return $this->returned_carboys;
+    }
+
+    /**
+     * @param int $returned_carboys
+     */
+    public function setReturnedCarboys(int $returned_carboys): void
+    {
+        $this->returned_carboys = $returned_carboys;
+    }
+
+    private $returned_carboys = 0;
     /**
      * @var SalesRepository
      */
@@ -150,6 +205,8 @@ class VisitRepository
         $visit->visited_date = Carbon::now();
         $visit->save();
 
+        $this->setCarboyMovement($this->getBorrowedCarboys(), $this->getObservations());
+        $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations());
 
         $this->visit = $visit;
 
@@ -157,13 +214,21 @@ class VisitRepository
 
     }
 
-    public function visit_by_reason(float $lat, float $lon, $reason_id, $customer_id)
+    public function visit_by_reason($request)
     {
-
+        $lat = $request->get('latitude');
+        $lon = $request->get('longitude');
+        $reason_id = $request->get('reason_id');
+        $customer_id = $request->get('customer_id');
+        $this->setBorrowedCarboys($request->get('borrowed_carboys'));
+        $this->setReturnedCarboys($request->get('returned_carboys'));
+        $this->setObservations($request->get('observations'));
         $reason = $this->reasonRepository->findById($reason_id);
         $this->setCustomer(Customer::find($customer_id));
         $this->setReason($reason);
-        return $this->save($lat, $lon);
+        $this->save($lat, $lon);
+
+
     }
 
 
@@ -185,9 +250,22 @@ class VisitRepository
                 'total' => $item['total'],
             ]);
         });
+
         $sales = $this->salesRepository->generate($this->visit, $sales_detail);
 
         return $sales;
+    }
+
+    public function setCarboyMovement($quantity = 0, $observations = null, $type = 'B')
+    {
+        if ($quantity > 0) {
+            $carboy_movement = new CarboyMovement();
+            $carboy_movement->quantity = $quantity;
+            $carboy_movement->observations = $observations;
+            $carboy_movement->type = $type;
+            $carboy_movement->visit_id = $this->getVisit();
+            $carboy_movement->save();
+        }
     }
 
 
