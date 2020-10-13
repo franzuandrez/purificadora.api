@@ -22,13 +22,13 @@ class CustomerController extends Controller
     }
 
 
-    public function index()
+    public function index(Request  $request)
     {
         return response([
             'success' => true,
             'customers' => $this
                 ->customerRepository
-                ->all()
+                ->all($request)
         ]);
     }
 

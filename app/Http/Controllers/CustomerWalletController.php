@@ -27,11 +27,11 @@ class CustomerWalletController extends Controller
 
     }
 
-    public function wallets()
+    public function wallets(Request  $request)
     {
         return response([
             'success' => true,
-            'data' => $this->customerWalletRepository->all(),
+            'data' => $this->customerWalletRepository->all($request),
         ]);
 
     }

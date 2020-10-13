@@ -25,9 +25,19 @@ class CustomerRepository
         $this->visitRepository = $visitRepository;
     }
 
-    public function all()
+    public function all($request)
     {
-        $customers = Customer::get()->map->format();
+        $search = $request->get('search');
+        $customers = Customer::
+        where(function ($query) use ($search) {
+            return $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('last_name', 'like', '%' . $search . '%')
+                ->orWhere('nickname', 'like', '%' . $search . '%')
+                ->orWhere('address', 'like', '%' . $search . '%');
+        })->get()
+            ->map
+            ->format();
+
 
         return $customers;
     }

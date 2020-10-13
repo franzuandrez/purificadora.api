@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\CustomerWallet;
 use App\Employee;
+use  Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -24,11 +25,16 @@ class CustomerWalletRepository
         return $wallets;
     }
 
-    public function all()
+    public function all(Request $request)
     {
-        $wallets = CustomerWallet::with('employees')->get();
+        $search = $request->get('search');
 
-        return $wallets;
+        return CustomerWallet::where(function ($query) use ($search) {
+            return $query->whereHas('employees', function (Builder $q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            })->orWhere('wallet', 'LIKE', '%' . $search . '%');
+        })
+            ->with('employees')->get();
     }
 
     public function storeFromRequest(Request $request)

@@ -10,9 +10,15 @@ class ProductRepository
 {
 
 
-    public function all()
+    public function all($request)
     {
-        return Product::get();
+        $search = $request->get('search');
+
+        return Product::where(
+            function ($query) use ($search) {
+                return $query->where('description', 'LIKE', '%' . $search . '%');
+            })
+            ->get();
     }
 
 
@@ -33,7 +39,6 @@ class ProductRepository
         return $product;
 
     }
-
 
 
     public function findById($id)

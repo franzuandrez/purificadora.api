@@ -12,6 +12,7 @@ use App\SalesDetail;
 use App\Visit;
 use App\VisitReason;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class VisitRepository
@@ -171,11 +172,25 @@ class VisitRepository
     }
 
 
-    public function all()
+    public function all($request)
     {
+
+        $search = $request->get('search');
+
         return (Visit::with('customer')
             ->with('employee')
             ->with('reason')
+            ->where(function ($query) use ($search) {
+                return $query->orwhereHas('employee', function (Builder $q) use ($search) {
+                    $q->orwhere('name', 'like', '%' . $search . '%');
+                })->orwhereHas('reason', function (Builder $q) use ($search) {
+                    $q->orwhere('description', 'like', '%' . $search . '%');
+                })->orwhereHas('customer', function (Builder $q) use ($search) {
+                    $q->orwhere('name', 'like', '%' . $search . '%')
+                        ->orwhere('last_name', 'like', '%' . $search . '%')
+                        ->orwhere('nickname', 'like', '%' . $search . '%');
+                });
+            })
             ->orderBy('visited_date', 'desc')
             ->paginate(15));
     }
@@ -207,6 +222,7 @@ class VisitRepository
         $visit->longitude = $lon;
         $visit->visited_date = Carbon::now();
         $visit->save();
+
 
         $this->setCarboyMovement($this->getBorrowedCarboys(), $this->getObservations());
         $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations());

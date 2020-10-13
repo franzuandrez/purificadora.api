@@ -22,7 +22,7 @@ class VisitsController extends Controller
 
         return response([
             'success' => true,
-            'data' => $this->visitRepository->all()
+            'data' => $this->visitRepository->all($request)
         ]);
 
 
