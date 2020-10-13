@@ -185,10 +185,13 @@ class VisitRepository
     {
 
 
-        return Visit::whereVisitId($id)->with('customer')
+        return Visit::whereVisitId($id)
+            ->with('customer')
             ->with('employee')
             ->with('reason')
             ->with('sales')
+            ->with('carboys_movements')
+            ->without('carboys_movements.visit')
             ->first();
     }
 

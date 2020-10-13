@@ -56,9 +56,7 @@ class Visit extends Model
         'longitude'
     ];
 
-    protected $with = [
-        'carboys_movements'
-    ];
+
     protected $dates = [
         'visited_date'
     ];
