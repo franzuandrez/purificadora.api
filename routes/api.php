@@ -38,7 +38,7 @@ Route::post('/register', 'UsersController@register');
 Route::get('customers', 'CustomerController@index')->name('customer.index')
     ->middleware('auth:api');
 Route::get('customer/{id}', 'CustomerController@show')->name('customer.show');
-Route::post('customer', 'CustomerController@customer')->name('customer.store')
+Route::post('customer', 'CustomerController@store')->name('customer.store')
     ->middleware('auth:api');
 
 
