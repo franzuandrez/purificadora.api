@@ -102,13 +102,13 @@ class Customer extends Model
     {
         return [
             'customer_id' => $this->customer_id,
-            'name' => $this->name,
-            'last_name' => $this->last_name,
-            'nickname' => $this->nickname,
+            'name' => $this->name ?? '',
+            'last_name' => $this->last_name ?? '',
+            'nickname' => $this->nickname ?? '',
             'address' => $this->address,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'test' => $this->borrowed_carboys
+            'borrowed_carboys' => $this->borrowed_carboys
         ];
     }
 
