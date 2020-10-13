@@ -56,6 +56,7 @@ class CustomerRepository
             $customer = $this->save($request, $customer);
 
             $this->visitRepository->setCustomer($customer);
+            $this->visitRepository->setBorrowedCarboys($request->get('borrowed_carboys'));
             $this->visitRepository->setReason(VisitReason::whereReasonId(3)->first());
 
 
