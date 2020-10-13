@@ -42,6 +42,7 @@ class CarboyMovement extends Model
     protected $with = [
         'visit'
     ];
+    public $timestamps = false;
 
     public function visit()
     {
