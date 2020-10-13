@@ -282,7 +282,8 @@ class VisitRepository
             $carboy_movement->quantity = $quantity;
             $carboy_movement->observations = $observations;
             $carboy_movement->type = $type;
-            $carboy_movement->visit_id = $this->getVisit();
+            $carboy_movement->visit_id = $this->getVisit()->visit_id;
+            $carboy_movement->customer_id = $this->getVisit()->customer_id;
             $carboy_movement->save();
         }
     }
