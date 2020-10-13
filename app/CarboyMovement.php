@@ -39,6 +39,9 @@ class CarboyMovement extends Model
         'type',
         'observations'
     ];
+    protected $with = [
+        'visit'
+    ];
 
     public function visit()
     {

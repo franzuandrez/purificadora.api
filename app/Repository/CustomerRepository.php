@@ -87,12 +87,27 @@ class CustomerRepository
 
         $customer = Customer::with('lastVisits')
             ->with('carboys_movements')
+            ->with('borrowed_carboys')
             ->with('lastVisits.reason')
             ->with('lastVisits.sales')
             ->with('lastVisits.sales')
             ->with('lastVisits.employee')
             ->find($id);
-        return $customer;
+
+        return [
+            'customer_id' => $customer->customer_id,
+            'name' => $customer->name,
+            'last_name' => $customer->last_name,
+            'nickname' => $customer->nickname,
+            'address' => $customer->address,
+            'last_date_visited' => $customer->last_date_visited,
+            'latitude' => $customer->latitude,
+            'longitude' => $customer->longitude,
+            'borrowed_carboys' => $customer->borrowed_carboys()->get('total')->sum('total'),
+            'last_visits' => $customer->lastVisits,
+            'carboys_movements' => $customer->carboys_movements
+        ];
+
     }
 
 

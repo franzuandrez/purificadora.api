@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 
@@ -60,7 +61,6 @@ class Customer extends Model
     ];
 
 
-
     public function lastVisits()
     {
         return $this->visits()
@@ -78,13 +78,22 @@ class Customer extends Model
     public function carboys_movements()
     {
         return
-            $this->visits()
-                ->has('carboys_movements');
+            $this->hasMany(CarboyMovement::class, 'customer_id', 'customer_id')
+                ->orderByDesc('id');
+
 
     }
 
+    /**
+     * @return HasMany
+     */
     public function borrowed_carboys()
     {
+        return
+            $this->carboys_movements()
+                ->select(\DB::raw("sum(if(type='B',1,-1)*quantity) as total"))
+                ->groupBy('customer_id');
+
 
     }
 
@@ -99,7 +108,7 @@ class Customer extends Model
             'address' => $this->address,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-
+            'test' => $this->borrowed_carboys
         ];
     }
 
