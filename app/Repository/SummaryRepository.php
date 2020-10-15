@@ -17,11 +17,14 @@ class SummaryRepository
 {
 
 
-    public function index()
+    public function index(Request $request)
     {
 
 
-        $visits = $this->getVisitsBetweenDate();
+        $visits = $this->getVisitsBetweenDate(
+            $request->get('start_date'),
+            $request->get('end_date'),
+            $request->get('user_id'));
 
         $carboys = $visits->map->carboys_movements->filter(function ($item) {
             return $item != null;
@@ -39,6 +42,7 @@ class SummaryRepository
 
 
         return [
+            'visits' => $visits,
             'total_visits' => $visits->count(),
             'borrowed_carboys' => $borrowed_carboys,
             'returned_carboys' => $returned_carboys,
@@ -69,20 +73,31 @@ class SummaryRepository
     }
 
 
-    private function getVisitsBetweenDate($start_date = null, $end_date = null)
+    private function getVisitsBetweenDate($start_date = null, $end_date = null, $user_id = null)
     {
 
         if ($start_date === null) {
             $start_date = Carbon::today();
+        } else {
+            $start_date = Carbon::createFromFormat('m/d/Y h:i:s', $start_date . ' 00:00:00');
         }
         if ($end_date === null) {
             $end_date = Carbon::tomorrow();
+        } else {
+            $end_date = Carbon::createFromFormat('m/d/Y h:i:s', $end_date.' 00:00:00')->addDay()->subSecond();
         }
+        $visits = Visit::whereBetween('visited_date', [$start_date, $end_date]);
 
-        return Visit::whereBetween('visited_date', [$start_date, $end_date])
-            ->with('sales')
+
+        if ($user_id !== null) {
+            $visits = $visits->where('employee_id', $user_id);
+        }
+        $visits = $visits->with('sales')
+            ->with('customer')
             ->with('reason')
             ->get();
+
+        return $visits;
     }
 
     private function getSales($visits)
