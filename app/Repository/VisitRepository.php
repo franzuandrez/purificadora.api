@@ -225,7 +225,7 @@ class VisitRepository
 
         $this->visit = $visit;
         $this->setCarboyMovement($this->getBorrowedCarboys(), $this->getObservations());
-        $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations());
+        $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations(),'R');
 
 
         return $visit;
