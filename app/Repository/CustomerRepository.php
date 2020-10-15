@@ -133,8 +133,8 @@ class CustomerRepository
 
         $this->visitRepository->setCustomer($customer);
         $this->visitRepository->setReason(VisitReason::find(2));
-        $this->visitRepository->setBorrowedCarboys($request->get('borrowed_carboys'));
-        $this->visitRepository->setReturnedCarboys($request->get('returned_carboys'));
+        $this->visitRepository->setBorrowedCarboys($request->get('borrowed_carboys') ?? 0);
+        $this->visitRepository->setReturnedCarboys($request->get('returned_carboys') ?? 0);
         $this->visitRepository->setObservations($request->get('observations'));
         $this->visitRepository->save($request->get('latitude'), $request->get('longitude'));
 

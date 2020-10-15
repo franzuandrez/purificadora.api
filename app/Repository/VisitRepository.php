@@ -50,7 +50,7 @@ class VisitRepository
     /**
      * @param int $borrowed_carboys
      */
-    public function setBorrowedCarboys(int $borrowed_carboys): void
+    public function setBorrowedCarboys(int $borrowed_carboys = 0): void
     {
         $this->borrowed_carboys = $borrowed_carboys;
     }
@@ -66,7 +66,7 @@ class VisitRepository
     /**
      * @param int $returned_carboys
      */
-    public function setReturnedCarboys(int $returned_carboys): void
+    public function setReturnedCarboys(int $returned_carboys = 0): void
     {
         $this->returned_carboys = $returned_carboys;
     }
@@ -228,7 +228,6 @@ class VisitRepository
         $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations());
 
 
-
         return $visit;
 
     }
@@ -239,13 +238,13 @@ class VisitRepository
         $lon = $request->get('longitude');
         $reason_id = $request->get('reason_id');
         $customer_id = $request->get('customer_id');
-        $this->setBorrowedCarboys($request->get('borrowed_carboys'));
-        $this->setReturnedCarboys($request->get('returned_carboys'));
+        $this->setBorrowedCarboys($request->get('borrowed_carboys') ?? 0);
+        $this->setReturnedCarboys($request->get('returned_carboys') ?? 0);
         $this->setObservations($request->get('observations'));
         $reason = $this->reasonRepository->findById($reason_id);
         $this->setCustomer(Customer::find($customer_id));
         $this->setReason($reason);
-        $this->save($lat, $lon);
+       return $this->save($lat, $lon);
 
 
     }
