@@ -13,7 +13,7 @@ class ReasonRepository
     public function all()
     {
 
-        return VisitReason::all();
+        return VisitReason::where('mobile_show', 1)->get();
 
     }
 
