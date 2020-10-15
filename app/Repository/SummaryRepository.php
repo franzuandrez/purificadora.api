@@ -99,17 +99,13 @@ class SummaryRepository
     private function getSummaryByProduct($sales)
     {
 
+        $ids_sales = count($sales) > 0 ? $sales->pluck('sales_id')->toArray() : [0];
 
-        $summary = collect([]);
-        if (count($sales) > 0) {
-            $summary = Product::selectRaw(
-                '*,(select sum(quantity) from sales_detail where sales_detail.product_id = product.product_id and sales_detail.sales_id in(?)) as total',
-                $sales->pluck('sales_id')->toArray()
-            )
-                ->get();
-        }
-
-        return $summary;
+        return Product::selectRaw(
+            '*,(select sum(quantity) from sales_detail where sales_detail.product_id = product.product_id and sales_detail.sales_id in(?)) as total',
+            $ids_sales
+        )
+            ->get();
 
     }
 
