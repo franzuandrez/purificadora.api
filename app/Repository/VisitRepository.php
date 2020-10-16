@@ -7,8 +7,10 @@ namespace App\Repository;
 use App\CarboyMovement;
 use App\Customer;
 use App\Employee;
+use App\Inventory;
 use App\Sales;
 use App\SalesDetail;
+use App\User;
 use App\Visit;
 use App\VisitReason;
 use Carbon\Carbon;
@@ -225,7 +227,7 @@ class VisitRepository
 
         $this->visit = $visit;
         $this->setCarboyMovement($this->getBorrowedCarboys(), $this->getObservations());
-        $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations(),'R');
+        $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations(), 'R');
 
 
         return $visit;
@@ -244,7 +246,7 @@ class VisitRepository
         $reason = $this->reasonRepository->findById($reason_id);
         $this->setCustomer(Customer::find($customer_id));
         $this->setReason($reason);
-       return $this->save($lat, $lon);
+        return $this->save($lat, $lon);
 
 
     }
@@ -284,6 +286,16 @@ class VisitRepository
             $carboy_movement->visit_id = $this->getVisit()->visit_id;
             $carboy_movement->customer_id = $this->getVisit()->customer_id;
             $carboy_movement->save();
+
+            $inventory = new Inventory();
+            $inventory->quantity = $quantity;
+            $inventory->type = $type;
+            $inventory->done_by = Auth::id();
+            $inventory->movement_date = Carbon::now();
+            $inventory->product_id = 1;
+            $inventory->document_id =   $carboy_movement->visit_id ;
+            $inventory->document_type = 'V';
+            $inventory->save();
         }
     }
 
