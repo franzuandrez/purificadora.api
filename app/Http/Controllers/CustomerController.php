@@ -22,7 +22,7 @@ class CustomerController extends Controller
     }
 
 
-    public function index(Request  $request)
+    public function index(Request $request)
     {
         return response([
             'success' => true,
@@ -50,9 +50,17 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         try {
-            $customer = $this
-                ->customerRepository
-                ->storeFromRequest($request);
+
+            if ($request->id != null) {
+                $customer = $this
+                    ->customerRepository
+                    ->save($request, $this->customerRepository->findById($request->id), true);
+            } else {
+                $customer = $this
+                    ->customerRepository
+                    ->storeFromRequest($request);
+            }
+
 
             if ($customer == null) {
                 throw new \Exception("Error al intentar crear cliente");

@@ -75,7 +75,7 @@ class CustomerRepository
         return $customer;
     }
 
-    private function save(Request $request, Customer $customer)
+    public function save(Request $request, Customer $customer, $is_edit = false)
     {
         $customer->name = $request->name;
         $customer->last_name = $request->last_name;
@@ -83,7 +83,9 @@ class CustomerRepository
         $customer->address = $request->address;
         $customer->latitude = $request->latitude;
         $customer->longitude = $request->longitude;
-        $customer->last_date_visited = Carbon::now();
+        if (!$is_edit) {
+            $customer->last_date_visited = Carbon::now();
+        }
         $customer->save();
         return $customer;
     }
