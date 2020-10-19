@@ -24,7 +24,7 @@ class ProductRepository
 
     public function storeFromRequest(Request $request)
     {
-        $product = new Product();
+        $product = Product::findOrNew($request->get('id'));
         $product = $this->save($product, $request);
 
         return $product;

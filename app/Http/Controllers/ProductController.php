@@ -41,16 +41,6 @@ class ProductController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
-    {
-
-        $product = $this->productRepository->updateFromRequest($request, $id);
-        return response([
-            'success' => true,
-            'data' => $product,
-            'message' => 'Actualizado correctamente'
-        ]);
-    }
 
     public function show($id)
     {
