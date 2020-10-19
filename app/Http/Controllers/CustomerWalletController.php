@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use App\Repository\CustomerWalletRepository;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,7 @@ class CustomerWalletController extends Controller
 
     }
 
-    public function wallets(Request  $request)
+    public function wallets(Request $request)
     {
         return response([
             'success' => true,
@@ -39,7 +40,12 @@ class CustomerWalletController extends Controller
     public function store(Request $request)
     {
 
-        $wallet = $this->customerWalletRepository->storeFromRequest($request);
+        if ($request->id === null) {
+            $wallet = $this->customerWalletRepository->storeFromRequest($request);
+        } else {
+            $wallet = $this->customerWalletRepository->updateFromRequest($request, $request->id);
+        }
+
 
         return response([
             'success' => true,
@@ -55,6 +61,18 @@ class CustomerWalletController extends Controller
             'success' => true,
             'data' => $wallet,
         ]);
+    }
+
+    public function associate(Request $request)
+
+    {
+        $wallet = $this->customerWalletRepository->associate($request);
+
+        return response([
+            'success' => true,
+            'data' => $wallet,
+        ]);
+
     }
 
     public function show($id)

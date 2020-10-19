@@ -28,8 +28,8 @@ class CustomerRepository
     public function all($request)
     {
         $search = $request->get('search');
-        $customers = Customer::
-        where(function ($query) use ($search) {
+        $status_id = $request->get('status_id');
+        $customers = Customer::where(function ($query) use ($search) {
             return $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('last_name', 'like', '%' . $search . '%')
                 ->orWhere('nickname', 'like', '%' . $search . '%')
@@ -37,6 +37,7 @@ class CustomerRepository
         })->get()
             ->map
             ->format();
+
 
 
         return $customers;

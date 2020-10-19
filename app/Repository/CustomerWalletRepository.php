@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Customer;
 use App\CustomerWallet;
 use App\Employee;
 use  Illuminate\Database\Eloquent\Builder;
@@ -55,8 +56,13 @@ class CustomerWalletRepository
 
     private function save(Request $request, CustomerWallet $wallet)
     {
-        $customers = $request->customers;
+        $customers = $request->customers ?? [];
+        $employees = $request->employees ?? [];
+
+        Customer::whereIn('customer_id', $customers)
+            ->update(['status' => 2]);
         $wallet->customers()->sync($customers);
+        $wallet->employees()->sync($employees);
         $wallet->wallet = $request->wallet;
         $wallet->save();
 
@@ -65,7 +71,18 @@ class CustomerWalletRepository
 
     public function findById($id)
     {
-        $wallet = CustomerWallet::findOrFail($id);
-        return $wallet;
+        return CustomerWallet::with('customers')
+            ->with('employees')
+            ->findOrFail($id);
+    }
+
+    public function associate($request)
+    {
+        $wallet = $this->findById($request->wallet_id);
+        $customer = Customer::find($request->customer_id);
+        $wallet->customers()->attach($customer);
+        $customer->status = 1;
+        $customer->save();
+        return $wallet->refresh();
     }
 }

@@ -39,11 +39,15 @@ Route::group(['middleware' => ['auth:api']], function () {
         ->middleware('auth:api');
     Route::post('wallets', 'CustomerWalletController@store')->name('wallets.store')
         ->middleware('auth:api');
+
+    Route::post('wallets/associate', 'CustomerWalletController@associate');
+
     Route::patch('wallets/{id}', 'CustomerWalletController@update')->name('wallets.update')
         ->middleware('auth:api');
     Route::get('wallets/{id}', 'CustomerWalletController@show')->name('wallets.show')
         ->middleware('auth:api');
     Route::get('all_wallets', 'CustomerWalletController@wallets');
+
 
 
     Route::get('products', 'ProductController@index')->name('products');
