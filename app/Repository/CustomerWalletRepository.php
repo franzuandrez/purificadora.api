@@ -44,7 +44,7 @@ class CustomerWalletRepository
                             $status = 'Visitado';
                             $order = 1;
                         } else {
-                            $color = '';
+                            $color = '#fff';
                             $status = '';
                             $order = 0;
                         }
