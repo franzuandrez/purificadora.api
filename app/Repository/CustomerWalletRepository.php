@@ -21,9 +21,52 @@ class CustomerWalletRepository
         $employee = Employee::where('user_id', Auth::id())
             ->with('wallets')
             ->first();
-        $wallets = $employee->wallets;
-
-        return $wallets;
+        return $employee->wallets->map(function ($wallet) {
+            return [
+                "wallet" => $wallet->wallet,
+                "customers" => ($wallet->customers->map(function ($customer) {
+                    $nextVisit = $customer->hasToVisitToday;
+                    $hasToVisitToday = count($nextVisit) > 0;
+                    $hasBeenVisitedToday = count($customer->hasBeenVisitedToday) > 0;
+                    if ($hasToVisitToday) {
+                        if ($hasBeenVisitedToday) {
+                            $color = '#2bce95';
+                            $status = 'Visitado';
+                            $order = 1;
+                        } else {
+                            $color = '#ffed4a';
+                            $status = 'Por Visitar';
+                            $order = 2;
+                        }
+                    } else {
+                        if ($hasBeenVisitedToday) {
+                            $color = '#2bce95';
+                            $status = 'Visitado';
+                            $order = 1;
+                        } else {
+                            $color = '';
+                            $status = '';
+                            $order = 0;
+                        }
+                    }
+                    return [
+                        'customer_id' => $customer->customer_id,
+                        'name' => $customer->name ?? '',
+                        'last_name' => $customer->last_name ?? '',
+                        'nickname' => $customer->nickname ?? '',
+                        'address' => $customer->address,
+                        'latitude' => $customer->latitude,
+                        'longitude' => $customer->longitude,
+                        'color' => $color,
+                        'status' => $status,
+                        'order' => $order
+                    ];
+                }))
+                    ->sortByDesc('order')
+                    ->values()
+                    ->all()
+            ];
+        });
     }
 
     public function all(Request $request)

@@ -100,6 +100,16 @@ class Customer extends Model
 
     public function format()
     {
+
+
+        if (count($this->hasBeenVisitedToday)) {
+            $color = '#2bce95';
+        } else {
+            $color = '';
+        }
+
+
+
         return [
             'customer_id' => $this->customer_id,
             'name' => $this->name ?? '',
@@ -108,7 +118,8 @@ class Customer extends Model
             'address' => $this->address,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'status' => $this->status
+            'status' => $this->status,
+            'color' => $color,
         ];
     }
 
@@ -116,6 +127,24 @@ class Customer extends Model
     {
         return $this->hasMany(UpcomingVisit::class, 'customer_id', 'customer_id')
             ->where('next_visit_date', '>=', Carbon::today());
+    }
+
+    public function hasToVisitToday()
+    {
+        return
+            $this->hasMany(UpcomingVisit::class, 'customer_id', 'customer_id')
+                ->where('next_visit_date', '=', Carbon::today())
+                ->limit(1);
+    }
+
+    public function hasBeenVisitedToday()
+    {
+        return $this->lastVisits()->whereBetween('visited_date', [
+                Carbon::today(),
+                Carbon::tomorrow()->subSecond()
+            ]
+        );
+
     }
 
 
