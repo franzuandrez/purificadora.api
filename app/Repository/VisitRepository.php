@@ -10,6 +10,7 @@ use App\Employee;
 use App\Inventory;
 use App\Sales;
 use App\SalesDetail;
+use App\UpcomingVisit;
 use App\User;
 use App\Visit;
 use App\VisitReason;
@@ -212,7 +213,7 @@ class VisitRepository
             ->first();
     }
 
-    public function save(float $lat, float $lon)
+    public function save(float $lat, float $lon, $next_visit_date = null)
     {
 
 
@@ -228,7 +229,7 @@ class VisitRepository
         $this->visit = $visit;
         $this->setCarboyMovement($this->getBorrowedCarboys(), $this->getObservations());
         $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations(), 'R');
-
+        $this->setUpcomingVisit($visit, $next_visit_date);
 
         return $visit;
 
@@ -246,7 +247,7 @@ class VisitRepository
         $reason = $this->reasonRepository->findById($reason_id);
         $this->setCustomer(Customer::find($customer_id));
         $this->setReason($reason);
-        return $this->save($lat, $lon);
+        return $this->save($lat, $lon, $request->get('next_visit_date'));
 
 
     }
@@ -293,10 +294,23 @@ class VisitRepository
             $inventory->done_by = Auth::id();
             $inventory->movement_date = Carbon::now();
             $inventory->product_id = 1;
-            $inventory->document_id =   $carboy_movement->visit_id ;
+            $inventory->document_id = $carboy_movement->visit_id;
             $inventory->document_type = 'V';
             $inventory->save();
         }
+    }
+
+    public function setUpcomingVisit(Visit $visit, $next_visit_date)
+    {
+
+        if ($next_visit_date) {
+            $upcoming_visit = new UpcomingVisit();
+            $upcoming_visit->customer_id = $visit->customer_id;
+            $upcoming_visit->next_visit_date = $next_visit_date;
+            $upcoming_visit->employee_id = Auth::id();
+            $upcoming_visit->save();
+        }
+
     }
 
 

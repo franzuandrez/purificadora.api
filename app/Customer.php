@@ -108,8 +108,14 @@ class Customer extends Model
             'address' => $this->address,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'status'=>$this->status
+            'status' => $this->status
         ];
+    }
+
+    public function uncoming_visits()
+    {
+        return $this->hasMany(UpcomingVisit::class, 'customer_id', 'customer_id')
+            ->where('next_visit_date', '>=', Carbon::today());
     }
 
 
