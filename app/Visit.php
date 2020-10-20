@@ -61,9 +61,6 @@ class Visit extends Model
         'visited_date'
     ];
 
-    protected $casts = [
-        'visited_date' => 'datetime:H:i:s d/m/Y'
-    ];
 
     public function customer()
     {
@@ -95,7 +92,7 @@ class Visit extends Model
     public function format()
     {
         return [
-            'visited_date' => $this->visited_date->format('d/m/Y H:i:s'),
+            'visited_date' => $this->visited_date,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'customer' => $this->customer->format(),

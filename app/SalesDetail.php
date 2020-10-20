@@ -48,7 +48,8 @@ class SalesDetail extends Model
         'unit_price_discount',
         'subtotal',
         'special_offer_id',
-        'sales_id'
+        'sales_id',
+        'total'
     ];
 
     protected $with = ['product'];

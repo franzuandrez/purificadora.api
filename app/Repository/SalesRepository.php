@@ -37,11 +37,21 @@ class SalesRepository
     public function all()
     {
 
-        return Sales::get()
-            ->map(function ($item) {
-                return $item->format();
-            });
+        return Sales::without('detail')
+            ->with('visit')
+            ->with('visit.employee')
+            ->with('visit.customer')
+            ->orderByDesc('sales_id')
+            ->paginate(20);
 
+    }
+
+    public function findById($id)
+    {
+        return Sales::with('visit')
+            ->with('visit.employee')
+            ->with('visit.customer')
+            ->findOrFail($id);
     }
 
 

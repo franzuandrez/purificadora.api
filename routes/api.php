@@ -14,40 +14,37 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::group(['middleware' => ['auth:api']], function () {
-    Route::get('/users', 'UsersController@index')
-        ->middleware('auth:api');
-    Route::get('/users/{id}', 'UsersController@show')
-        ->middleware('auth:api');
-    Route::patch('/users/{id}', 'UsersController@update')
-        ->middleware('auth:api');
 
-    Route::post('/logout', 'UsersController@logout')
-        ->middleware('auth:api');
+    Route::get('/users', 'UsersController@index');
+
+    Route::get('/users/{id}', 'UsersController@show');
+
+    Route::patch('/users/{id}', 'UsersController@update');
+
+
+    Route::post('/logout', 'UsersController@logout');
 
 
     Route::post('/register', 'UsersController@register');
-    Route::get('customers', 'CustomerController@index')->name('customer.index')
-        ->middleware('auth:api');
+    Route::get('customers', 'CustomerController@index')->name('customer.index');
+
     Route::get('customer/{id}', 'CustomerController@show')->name('customer.show');
-    Route::post('customer', 'CustomerController@store')->name('customer.store')
-        ->middleware('auth:api');
+    Route::post('customer', 'CustomerController@store')->name('customer.store');
 
 
-    Route::get('wallets', 'CustomerWalletController@index')->name('wallets')
-        ->middleware('auth:api');
-    Route::post('wallets', 'CustomerWalletController@store')->name('wallets.store')
-        ->middleware('auth:api');
+    Route::get('wallets', 'CustomerWalletController@index')->name('wallets');
+
+    Route::post('wallets', 'CustomerWalletController@store')->name('wallets.store');
+
 
     Route::post('wallets/associate', 'CustomerWalletController@associate');
 
-    Route::patch('wallets/{id}', 'CustomerWalletController@update')->name('wallets.update')
-        ->middleware('auth:api');
-    Route::get('wallets/{id}', 'CustomerWalletController@show')->name('wallets.show')
-        ->middleware('auth:api');
-    Route::get('all_wallets', 'CustomerWalletController@wallets');
+    Route::patch('wallets/{id}', 'CustomerWalletController@update')->name('wallets.update');
 
+    Route::get('wallets/{id}', 'CustomerWalletController@show')->name('wallets.show');
+
+    Route::get('all_wallets', 'CustomerWalletController@wallets');
 
 
     Route::get('products', 'ProductController@index')->name('products');
@@ -61,11 +58,12 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('visit_reason/{id}', 'VisitReasonController@show');
 
 
-    Route::post('sales', 'SalesController@store')->name('sales.store')->middleware('auth:api');
-    Route::get('sales', 'SalesController@index')->name('sales')->middleware('auth:api');
+    Route::post('sales', 'SalesController@store')->name('sales.store');
+    Route::get('sales', 'SalesController@index')->name('sales');
+    Route::get('sales/{id}', 'SalesController@show')->name('sales.show');
 
     Route::get('visits', 'VisitsController@index')->name('visits');
-    Route::post('visits', 'VisitsController@store')->name('visits.store')->middleware('auth:api');
+    Route::post('visits', 'VisitsController@store')->name('visits.store');
     Route::get('visits/{id}', 'VisitsController@show')->name('visits.show');
 
 
