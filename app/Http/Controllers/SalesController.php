@@ -28,11 +28,11 @@ class SalesController extends Controller
     {
 
 
-        //$sales = $this->customerRepository->generate_sales($request);
+        $sales = $this->customerRepository->generate_sales($request);
 
         return response([
             'success' => true,
-            'data' => $request->all()
+            'data' => $sales
         ]);
     }
 
