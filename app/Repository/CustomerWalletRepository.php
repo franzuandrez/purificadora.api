@@ -58,9 +58,9 @@ class CustomerWalletRepository
     {
         $customers = $request->customers ?? [];
         $employees = $request->employees ?? [];
-
+        $wallet->customers()->update(['status' => 2]);
         Customer::whereIn('customer_id', $customers)
-            ->update(['status' => 2]);
+            ->update(['status' => 1]);
         $wallet->customers()->sync($customers);
         $wallet->employees()->sync($employees);
         $wallet->wallet = $request->wallet;
