@@ -6,8 +6,10 @@ namespace App\Repository;
 
 use App\CarboyMovement;
 use App\Customer;
+use App\Debts;
 use App\Employee;
 use App\Inventory;
+use App\Payment;
 use App\Sales;
 use App\SalesDetail;
 use App\UpcomingVisit;
@@ -218,7 +220,7 @@ class VisitRepository
 
 
         $visit = new Visit();
-        $visit->employee_id = Auth::user()->employee->employee_id;
+        $visit->employee_id = User::findOrFail(1);
         $visit->customer_id = $this->getCustomer()->customer_id;
         $visit->reason_id = $this->getReason()->reason_id;
         $visit->latitude = $lat;
@@ -276,6 +278,65 @@ class VisitRepository
 
         return $sales;
     }
+
+    public function credit(array $detail)
+    {
+
+        collect($detail)->each(function ($item) {
+            $det = new Debts([
+                'product_id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'total' => $item['total'],
+                'visit_id' => $this->getVisit()->visit_id,
+                'customer_id' => $this->getCustomer()->customer_id,
+                'status' => 'pendiente',
+            ]);
+            $det->save();
+        });
+        return $detail;
+
+    }
+
+
+    public function pay($request)
+    {
+
+        $debts = collect($request->debts);
+        $lat = $request->get('latitude');
+        $lon = $request->get('longitude');
+        $this->setBorrowedCarboys($request->get('borrowed_carboys') ?? 0);
+        $this->setReturnedCarboys($request->get('returned_carboys') ?? 0);
+        $this->setObservations($request->get('observations'));
+        $this->setCustomer(Customer::find($request->get('customer_id')));
+        $this->setReason(VisitReason::find(6));
+        $this->save($lat, $lon, $request->get('next_visit_date'));
+        $debts->each(function ($item) {
+            $debt = Debts::with('payments')->find($item['debt_id']);
+            if ($debt != null) {
+                $quantity = $debt->payments->sum('quantity');
+                if ($debt->quantity <= $quantity + $item['quantity']) {
+                    $payment = new Payment();
+                    $payment->debt_id = $item['debt_id'];
+                    $payment->quantity = $item['quantity'];
+                    $payment->total = $item['total'];
+                    $payment->employee_id = User::find(1)->employee->employee_id;
+                    $payment->customer_id = $debt->customer_id;
+                    $payment->visit_id = $this->getVisit()->visit_id;
+                    $payment->save();
+                }
+                if ($debt->quantity == $quantity + $item['quantity']) {
+                    $debt->payment_date = Carbon::now();
+                    $debt->status = 'pagado';
+                    $debt->save();
+                }
+            }
+
+        });
+        return $this->getVisit();
+
+    }
+
 
     public function setCarboyMovement($quantity = 0, $observations = null, $type = 'B')
     {

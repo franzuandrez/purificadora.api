@@ -149,5 +149,10 @@ class Customer extends Model
 
     }
 
+    public function debts()
+    {
+        return $this->hasMany(Debts::class, 'customer_id', 'customer_id');
+    }
+
 
 }

@@ -39,7 +39,6 @@ class CustomerRepository
             ->format();
 
 
-
         return $customers;
     }
 
@@ -133,17 +132,23 @@ class CustomerRepository
         } else {
             $customer = $this->findById($request->customer_id);
         }
-
+        $es_credito = $request->get('credit') == 0;
         $this->visitRepository->setCustomer($customer);
-        $this->visitRepository->setReason(VisitReason::find(2));
+        $this->visitRepository->setReason($es_credito ? VisitReason::find(5) : VisitReason::find(2));
         $this->visitRepository->setBorrowedCarboys($request->get('borrowed_carboys') ?? 0);
         $this->visitRepository->setReturnedCarboys($request->get('returned_carboys') ?? 0);
         $this->visitRepository->setObservations($request->get('observations'));
         $this->visitRepository->save($request->get('latitude'), $request->get('longitude'));
+        $this->visitRepository->setUpcomingVisit($this->visitRepository->getVisit(), $request->get('next_visit_date'));
 
-        return $this->visitRepository->sales($request->sales_detail);
+        if ($es_credito) {
+            return $this->visitRepository->sales($request->sales_detail);
+        } else {
+            return $this->visitRepository->credit($request->sales_detail);
+        }
 
 
     }
+
 
 }

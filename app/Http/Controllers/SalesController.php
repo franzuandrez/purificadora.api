@@ -30,6 +30,7 @@ class SalesController extends Controller
 
         $sales = $this->customerRepository->generate_sales($request);
 
+
         return response([
             'success' => true,
             'data' => $sales
