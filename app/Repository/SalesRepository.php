@@ -42,8 +42,7 @@ class SalesRepository
     {
         $start_date = $request->get('start_date');
         $end_date = $request->get('end_date');
-        Carbon::setLocale('es');
-        CarbonPeriod::setLocale('es');
+
 
         if ($start_date === null) {
             $start_date = Carbon::today();
@@ -71,10 +70,12 @@ class SalesRepository
             ->with('employee')
             ->select(\DB::raw("date_format(visited_date,'%d/%m/%Y') as visited_at"), 'visit.*')
             ->whereBetween('visited_date', [$start_date, $end_date])
+            ->where('reason_id', 2)
             ->get();
 
 
         $grouped_by_date = $sales_between_dates->groupBy('visited_at');
+
 
         $grouped_by_user = $sales_between_dates->groupBy('employee_id')->map(function ($item) {
             return [
