@@ -220,7 +220,7 @@ class VisitRepository
 
 
         $visit = new Visit();
-        $visit->employee_id = User::findOrFail(1);
+        $visit->employee_id = Auth::user()->employee->employee_id;
         $visit->customer_id = $this->getCustomer()->customer_id;
         $visit->reason_id = $this->getReason()->reason_id;
         $visit->latitude = $lat;
@@ -320,7 +320,7 @@ class VisitRepository
                     $payment->debt_id = $item['debt_id'];
                     $payment->quantity = $item['quantity'];
                     $payment->total = $item['total'];
-                    $payment->employee_id = User::find(1)->employee->employee_id;
+                    $payment->employee_id = Auth::user()->employee->employee_id;
                     $payment->customer_id = $debt->customer_id;
                     $payment->visit_id = $this->getVisit()->visit_id;
                     $payment->save();

@@ -132,7 +132,7 @@ class CustomerRepository
         } else {
             $customer = $this->findById($request->customer_id);
         }
-        $es_credito = $request->get('credit') == 0;
+        $es_credito = $request->get('credit') == 1;
         $this->visitRepository->setCustomer($customer);
         $this->visitRepository->setReason($es_credito ? VisitReason::find(5) : VisitReason::find(2));
         $this->visitRepository->setBorrowedCarboys($request->get('borrowed_carboys') ?? 0);
