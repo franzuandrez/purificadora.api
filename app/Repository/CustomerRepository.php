@@ -141,7 +141,7 @@ class CustomerRepository
         $this->visitRepository->save($request->get('latitude'), $request->get('longitude'));
         $this->visitRepository->setUpcomingVisit($this->visitRepository->getVisit(), $request->get('next_visit_date'));
 
-        if ($es_credito) {
+        if (!$es_credito) {
             return $this->visitRepository->sales($request->sales_detail);
         } else {
             return $this->visitRepository->credit($request->sales_detail);
