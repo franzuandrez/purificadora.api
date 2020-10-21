@@ -36,6 +36,7 @@ class SummaryRepository
 
         $sales = $this->getSales($visits);
 
+
         $sum_sales = $sales->map(function ($item) {
             return $item->first();
         })->sum('total');
@@ -84,7 +85,7 @@ class SummaryRepository
         if ($end_date === null) {
             $end_date = Carbon::tomorrow();
         } else {
-            $end_date = Carbon::createFromFormat('m/d/Y h:i:s', $end_date.' 00:00:00')->addDay()->subSecond();
+            $end_date = Carbon::createFromFormat('m/d/Y h:i:s', $end_date . ' 00:00:00')->addDay()->subSecond();
         }
         $visits = Visit::whereBetween('visited_date', [$start_date, $end_date]);
 
@@ -114,13 +115,21 @@ class SummaryRepository
     private function getSummaryByProduct($sales)
     {
 
-        $ids_sales = count($sales) > 0 ? $sales->pluck('sales_id')->toArray() : [0];
 
-        return Product::selectRaw(
-            '*,(select sum(quantity) from sales_detail where sales_detail.product_id = product.product_id and sales_detail.sales_id in(?)) as total',
-            $ids_sales
+        if (count($sales) > 0) {
+            $ids_sales = (substr($sales->pluck('sales_id')->reduce(function ($carry, $item) {
+                return $carry . ',' . $item;
+            }), 1));
+        } else {
+            $ids_sales = '0';
+        }
+
+
+        return Product::select('*',
+            \DB::raw('(select sum(quantity) from sales_detail where sales_detail.product_id = product.product_id and sales_detail.sales_id in (' . $ids_sales . ')) as total')
         )
             ->get();
+
 
     }
 

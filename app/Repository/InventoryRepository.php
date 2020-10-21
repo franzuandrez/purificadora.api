@@ -42,7 +42,7 @@ class InventoryRepository
 
 
         return [
-            'movements' => $movements,
+            'movements' => $movements->take(10),
             'with_customers' => $with_customers,
             'in_store' => ($in_store),
             'customers' => $customers

@@ -30,17 +30,17 @@ class CustomerWalletRepository
                     $hasBeenVisitedToday = count($customer->hasBeenVisitedToday) > 0;
                     if ($hasToVisitToday) {
                         if ($hasBeenVisitedToday) {
-                            $color = '#2bce95';
+                            $color = '#5893d4';
                             $status = 'Visitado';
                             $order = 1;
                         } else {
-                            $color = '#ffed4a';
+                            $color = '#1f3c88';
                             $status = 'Por Visitar';
                             $order = 2;
                         }
                     } else {
                         if ($hasBeenVisitedToday) {
-                            $color = '#2bce95';
+                            $color = '#5893d4';
                             $status = 'Visitado';
                             $order = 1;
                         } else {

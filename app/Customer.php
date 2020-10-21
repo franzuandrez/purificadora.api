@@ -103,7 +103,7 @@ class Customer extends Model
 
 
         if (count($this->hasBeenVisitedToday)) {
-            $color = '#2bce95';
+            $color = '#5893d4';
         } else {
             $color = '#ffffff';
         }
