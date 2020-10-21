@@ -42,7 +42,7 @@ class SalesRepository
             ->with('visit.employee')
             ->with('visit.customer')
             ->orderByDesc('sales_id')
-            ->paginate(20);
+            ->paginate(8);
 
     }
 

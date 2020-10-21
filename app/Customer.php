@@ -104,10 +104,11 @@ class Customer extends Model
 
         if (count($this->hasBeenVisitedToday)) {
             $color = '#5893d4';
+            $order = 2;
         } else {
             $color = '#ffffff';
+            $order = 0;
         }
-
 
 
         return [
@@ -119,6 +120,7 @@ class Customer extends Model
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
             'status' => $this->status,
+            'order' => $order,
             'color' => $color,
         ];
     }

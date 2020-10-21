@@ -31,17 +31,17 @@ class CustomerWalletRepository
                     if ($hasToVisitToday) {
                         if ($hasBeenVisitedToday) {
                             $color = '#5893d4';
-                            $status = 'Visitado';
+                            $status = 'visitado';
                             $order = 1;
                         } else {
                             $color = '#1f3c88';
-                            $status = 'Por Visitar';
+                            $status = 'por_visitar';
                             $order = 2;
                         }
                     } else {
                         if ($hasBeenVisitedToday) {
                             $color = '#5893d4';
-                            $status = 'Visitado';
+                            $status = 'visitado';
                             $order = 1;
                         } else {
                             $color = '#ffffff';
