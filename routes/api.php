@@ -59,7 +59,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
     Route::post('sales', 'SalesController@store')->name('sales.store');
-    Route::get('sales', 'SalesController@index')->name('sales');
+    Route::get('sales', 'SalesController@summary')->name('sales');
     Route::get('sales/{id}', 'SalesController@show')->name('sales.show');
 
     Route::get('visits', 'VisitsController@index')->name('visits');
