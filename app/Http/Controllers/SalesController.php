@@ -37,10 +37,10 @@ class SalesController extends Controller
     }
 
 
-    public function index(Request $request)
+    public function summary(Request $request)
     {
 
-        $sales = $this->salesRepository->all();
+        $sales = $this->salesRepository->summary($request);
 
         return response([
             'success' => true,
