@@ -328,6 +328,7 @@ class VisitRepository
                 if (intval($debt->quantity) == intval($quantity + $item['quantity'])) {
                     $debt->payment_date = Carbon::now();
                     $debt->status = 'pagado';
+                    $debt->employee_collector_id = Auth::user()->employee->employee_id;
                     $debt->save();
                 }
             }
