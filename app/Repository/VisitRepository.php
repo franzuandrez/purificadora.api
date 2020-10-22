@@ -315,16 +315,16 @@ class VisitRepository
             $debt = Debts::with('payments')->findOrFail($item['debt_id']);
             if ($debt != null) {
                 $quantity = $debt->payments->sum('quantity');
-                if ($debt->quantity <= $quantity + $item['quantity']) {
-                    $payment = new Payment();
-                    $payment->debt_id = $item['debt_id'];
-                    $payment->quantity = $item['quantity'];
-                    $payment->total = $item['total'];
-                    $payment->employee_id = Auth::user()->employee->employee_id;
-                    $payment->customer_id = $debt->customer_id;
-                    $payment->visit_id = $this->getVisit()->visit_id;
-                    $payment->save();
-                }
+
+                $payment = new Payment();
+                $payment->debt_id = $item['debt_id'];
+                $payment->quantity = $item['quantity'];
+                $payment->total = $item['total'];
+                $payment->employee_id = Auth::user()->employee->employee_id;
+                $payment->customer_id = $debt->customer_id;
+                $payment->visit_id = $this->getVisit()->visit_id;
+                $payment->save();
+
                 if ($debt->quantity == $quantity + $item['quantity']) {
                     $debt->payment_date = Carbon::now();
                     $debt->status = 'pagado';
