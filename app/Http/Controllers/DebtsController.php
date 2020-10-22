@@ -49,7 +49,7 @@ class DebtsController extends Controller
 
         return response([
             'success' => true,
-            'data' => $payment
+            'data' => $request->all()
         ]);
 
 
