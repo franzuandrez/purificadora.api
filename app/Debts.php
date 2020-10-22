@@ -68,7 +68,7 @@ class Debts extends Model
 
     public function payments()
     {
-        return $this->hasMany(Payment::class, 'id', 'debt_id');
+        return $this->hasMany(Payment::class, 'debt_id', 'id');
     }
 
     public function product()
