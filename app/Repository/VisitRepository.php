@@ -312,7 +312,7 @@ class VisitRepository
         $this->setReason(VisitReason::find(6));
         $this->save($lat, $lon, $request->get('next_visit_date'));
         $debts->each(function ($item) {
-            $debt = Debts::with('payments')->find($item['debt_id']);
+            $debt = Debts::with('payments')->findOrFail($item['debt_id']);
             if ($debt != null) {
                 $quantity = $debt->payments->sum('quantity');
                 if ($debt->quantity <= $quantity + $item['quantity']) {
