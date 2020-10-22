@@ -37,10 +37,7 @@ class SummaryRepository
         $sales = $this->getSales($visits);
 
 
-        $sum_sales = $sales->map(function ($item) {
-            return $item->first();
-        })->sum('total');
-
+        $sum_sales = $sales->sum('total');
 
         return [
             'visits' => $visits,
