@@ -27,8 +27,8 @@ class DebtsController extends Controller
     {
 
 
-        $debts = Debts::select('debts.*',
-            \DB::raw('(select ifnull(sum(quantity),0) from payments where debt_id = debts.id) as paid_out '))
+        $debts = Debts::select('debts.*', \DB::raw('convert(quantity,SIGNED) as quantity '),
+            \DB::raw('(select CONVERT(ifnull(sum(quantity),0),SIGNED) from payments where debt_id = debts.id) as paid_out '))
             ->where('customer_id', $id)
             ->where('status', 'pendiente')
             ->get();
