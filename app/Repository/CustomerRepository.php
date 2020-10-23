@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\Customer;
+use App\Debts;
 use App\VisitReason;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -107,6 +108,13 @@ class CustomerRepository
             ->with('lastVisits.employee')
             ->find($id);
 
+
+        $debts = Debts::with('payments')->select('debts.*', \DB::raw('convert(quantity,SIGNED) as quantity '),
+            \DB::raw('(select CONVERT(ifnull(sum(quantity),0),SIGNED) from payments where debt_id = debts.id) as paid_out '))
+            ->where('customer_id', $id)
+            ->where('status', 'pendiente')
+            ->get();
+
         return [
             'customer_id' => $customer->customer_id,
             'name' => $customer->name,
@@ -118,7 +126,8 @@ class CustomerRepository
             'longitude' => $customer->longitude,
             'borrowed_carboys' => $customer->borrowed_carboys()->get('total')->sum('total'),
             'last_visits' => $customer->lastVisits,
-            'carboys_movements' => $customer->carboys_movements
+            'carboys_movements' => $customer->carboys_movements,
+            'debts' => $debts
         ];
 
     }
