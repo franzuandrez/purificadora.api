@@ -54,4 +54,43 @@ class DebtsController extends Controller
 
 
     }
+
+
+    public function summary()
+    {
+
+        $debts = Debts:: without('visit')
+            ->with('customer')
+            ->select('debts.*', \DB::raw('convert(quantity,SIGNED) as quantity '),
+                \DB::raw('(select CONVERT(ifnull(sum(quantity),0),SIGNED) from payments where debt_id = debts.id) as paid_out '))
+            ->where('status', 'pendiente')
+            ->get();
+
+        $total = $debts->sum(function ($item) {
+            return ($item->quantity - $item->paid_out) * $item->price;
+        });
+
+        $customers = $debts
+            ->groupBy('customer_id')
+            ->map(function ($item) {
+                return (object) [
+                    'customer' => $item->first()->customer,
+                    'total' => $item->sum(function ($item) {
+                        return ($item->quantity - $item->paid_out) * $item->price;
+                    })
+                ];
+            });
+
+
+
+        return response([
+            'success' => true,
+            'data' => [
+                'debts' => $debts,
+                'total' => $total,
+                'customers' => $customers
+            ]
+        ]);
+
+    }
 }

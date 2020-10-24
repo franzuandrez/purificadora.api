@@ -73,6 +73,7 @@ Route::get('visits/{id}', 'VisitsController@show')->name('visits.show');
 Route::get('summary', 'SummaryController@index');
 Route::get('inventory', 'InventoryController@index');
 
+Route::get('debts', 'DebtsController@summary')->name('debts.summary');
 
 });
 
