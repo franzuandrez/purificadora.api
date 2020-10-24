@@ -106,7 +106,7 @@ class SalesRepository
             ->with('visit.employee')
             ->with('visit.customer')
             ->orderByDesc('sales_id')
-            ->limit(6)
+            ->limit(3)
             ->get();
 
 
