@@ -38,8 +38,14 @@ class SummaryRepository
 
         $sales = $this->getSales($visits);
 
-
+        $summary_by_product = $this->getSummaryByProduct($visits, $sales);
         $sum_sales = $sales->sum('total');
+        $sum_payments = $summary_by_product->reduce(
+            function ($carry, $item) {
+                return $carry + $item['payments_total'];
+            }
+        );
+
 
         return [
             'visits' => $visits,
@@ -47,8 +53,9 @@ class SummaryRepository
             'borrowed_carboys' => $borrowed_carboys,
             'returned_carboys' => $returned_carboys,
             'total_sales' => $sales->count(),
-            'sum_sales' => 'Q.' . $sum_sales,
-            'summary_by_product' => $this->getSummaryByProduct($visits, $sales),
+            'sum_sales' => $sum_sales,
+            'sum_payments' => $sum_payments,
+            'summary_by_product' => $summary_by_product,
             'summary_by_reason' => $this->getSummaryByReason($visits)
         ];
 
