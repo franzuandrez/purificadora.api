@@ -223,8 +223,8 @@ class VisitRepository
         $visit->employee_id = Auth::user()->employee->employee_id;
         $visit->customer_id = $this->getCustomer()->customer_id;
         $visit->reason_id = $this->getReason()->reason_id;
-        $visit->latitude = $lat;
-        $visit->longitude = $lon;
+        $visit->latitude = $this->getCustomer()->latitude;
+        $visit->longitude = $this->getCustomer()->longitude;
         $visit->visited_date = Carbon::now();
         $visit->save();
 
