@@ -29,13 +29,21 @@ class CustomerRepository
     public function all($request)
     {
         $search = $request->get('search');
-        $status_id = $request->get('status_id');
+        $status_id = $request->get('status');
+
+
         $customers = Customer::where(function ($query) use ($search) {
             return $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('last_name', 'like', '%' . $search . '%')
                 ->orWhere('nickname', 'like', '%' . $search . '%')
                 ->orWhere('address', 'like', '%' . $search . '%');
-        })->get()
+        });
+
+        if ($status_id != "") {
+            $customers = $customers->where('status', $status_id);
+        }
+
+        $customers = $customers->get()
             ->map
             ->format();
 
