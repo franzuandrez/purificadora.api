@@ -3,6 +3,8 @@
 
 namespace App\Repository;
 
+use App\Debts;
+use App\Payment;
 use App\Product;
 use App\Sales;
 use App\SalesDetail;
@@ -46,7 +48,7 @@ class SummaryRepository
             'returned_carboys' => $returned_carboys,
             'total_sales' => $sales->count(),
             'sum_sales' => 'Q.' . $sum_sales,
-            'summary_by_product' => $this->getSummaryByProduct($sales),
+            'summary_by_product' => $this->getSummaryByProduct($visits, $sales),
             'summary_by_reason' => $this->getSummaryByReason($visits)
         ];
 
@@ -109,24 +111,86 @@ class SummaryRepository
     }
 
 
-    private function getSummaryByProduct($sales)
+    private function getSummaryByProduct($visits, $sale)
     {
 
-
-        if (count($sales) > 0) {
-            $ids_sales = (substr($sales->pluck('sales_id')->reduce(function ($carry, $item) {
-                return $carry . ',' . $item;
-            }), 1));
-        } else {
-            $ids_sales = '0';
-        }
+        $ids = $visits->whereIn('reason_id', [2, 5, 6])->pluck('visit_id')->toArray();
 
 
-        return Product::select('*',
-            \DB::raw('(select sum(quantity) from sales_detail where sales_detail.product_id = product.product_id and sales_detail.sales_id in (' . $ids_sales . ')) as total')
-        )
+        $debts = \DB::table('debts as summary')
+            ->select(
+                'product.description',
+                \DB::raw('summary.product_id as id'),
+                \DB::raw('(quantity) as debts_quantity'),
+                \DB::raw('(quantity* summary.price) as debts_total'),
+                \DB::raw('0 as payments_quantity '),
+                \DB::raw('0 as payments_total '),
+                \DB::raw('0 as sales_quantity '),
+                \DB::raw('0 as sales_total ')
+            )->join('product', 'product.product_id', '=', 'summary.product_id')
+            ->whereIn('visit_id', $ids)
             ->get();
 
+
+        $payments = \DB::table('payments as summary')->select(
+            'product.description',
+            \DB::raw('summary.product_id as id'),
+            \DB::raw('0 as debts_quantity '),
+            \DB::raw('0 as debts_total '),
+            \DB::raw('(quantity) as payments_quantity'),
+            \DB::raw('total as payments_total'),
+            \DB::raw('0 as sales_quantity '),
+            \DB::raw('0 as sales_total ')
+        )
+            ->join('product', 'product.product_id', '=', 'summary.product_id')
+            ->whereIn('visit_id', $ids)
+            ->get();
+
+
+        $sales = \DB::table('sales_detail as summary')->select(
+            'product.description',
+            \DB::raw('summary.product_id as id '),
+            \DB::raw('0 as debts_quantity '),
+            \DB::raw('0 as debts_total '),
+            \DB::raw('0 as payments_quantity '),
+            \DB::raw('0 as payments_total '),
+            \DB::raw('(quantity) as sales_quantity'),
+            \DB::raw('(quantity*summary.price) as sales_total')
+        )->join('product', 'product.product_id', '=', 'summary.product_id')
+            ->whereIn('sales_id', $sale->pluck('sales_id')->toArray())
+            ->get();
+
+
+        $collect = collect([])
+            ->push($debts)
+            ->push($payments)
+            ->push($sales)
+            ->collapse()
+            ->groupBy('description')
+            ->map(function ($item) {
+                return [
+                    'debts_quantity' => $item->reduce(function ($carry, $item) {
+                        return $carry + $item->debts_quantity;
+                    }, 0),
+                    'debts_total' => $item->reduce(function ($carry, $item) {
+                        return $carry + $item->debts_total;
+                    }, 0),
+                    'payments_quantity' => $item->reduce(function ($carry, $item) {
+                        return $carry + $item->payments_quantity;
+                    }, 0),
+                    'payments_total' => $item->reduce(function ($carry, $item) {
+                        return $carry + $item->payments_total;
+                    }, 0),
+                    'sales_quantity' => $item->reduce(function ($carry, $item) {
+                        return $carry + $item->sales_quantity;
+                    }, 0),
+                    'sales_total' => $item->reduce(function ($carry, $item) {
+                        return $carry + $item->sales_total;
+                    }, 0)
+                ];
+            });
+
+        return $collect;
 
     }
 
