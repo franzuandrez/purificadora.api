@@ -4,10 +4,12 @@
 namespace App\Repository;
 
 use App\Debts;
+use App\Employee;
 use App\Payment;
 use App\Product;
 use App\Sales;
 use App\SalesDetail;
+use App\UpcomingVisit;
 use App\Visit;
 use App\VisitReason;
 use Carbon\Carbon;
@@ -33,6 +35,11 @@ class SummaryRepository
         });
 
 
+        $customers_visited = $this->getTotalCustomersVisited($visits);
+        $customers_to_visit = $this->getTotalCustomersToVisit($request->get('start_date'),
+            $request->get('end_date'),
+            $request->get('user_id')
+        );
         $returned_carboys = $this->getTotalReturnedCarboys($carboys);
         $borrowed_carboys = $this->getTotalBorrowedCarboys($carboys);
 
@@ -49,6 +56,8 @@ class SummaryRepository
 
         return [
             'visits' => $visits,
+            'customers_visited' => $customers_visited,
+            'customers_to_visit' => $customers_to_visit,
             'total_visits' => $visits->count(),
             'borrowed_carboys' => $borrowed_carboys,
             'returned_carboys' => $returned_carboys,
@@ -60,6 +69,49 @@ class SummaryRepository
         ];
 
 
+    }
+
+
+    private function getTotalCustomersVisited($visits)
+    {
+
+        return $visits->groupBy('customer_id')->count();
+
+    }
+
+
+    private function getDateRanges($start_date, $end_date)
+    {
+        if ($start_date === null) {
+            $start_date = Carbon::today();
+        } else {
+            $start_date = Carbon::createFromFormat('m/d/Y h:i:s', $start_date . ' 00:00:00');
+        }
+        if ($end_date === null) {
+            $end_date = Carbon::tomorrow();
+        } else {
+            $end_date = Carbon::createFromFormat('m/d/Y h:i:s', $end_date . ' 00:00:00')->addDay()->subSecond();
+        }
+        return [
+            $start_date,
+            $end_date
+        ];
+    }
+
+    private function getTotalCustomersToVisit($start_date = null, $end_date = null, $user_id = null)
+    {
+        $ranges = $this->getDateRanges($start_date, $end_date);
+
+
+        $total = UpcomingVisit::whereBetween('next_visit_date', $ranges)
+            ->groupBy('customer_id');
+
+        if ($user_id !== null && $user_id !== '') {
+            $total = $total->where('employee_id', Employee::find($user_id)->user_id);
+        }
+        $total = $total->get();
+
+        return count($total);
     }
 
     private function getTotalBorrowedCarboys($carboys)
@@ -83,17 +135,9 @@ class SummaryRepository
     private function getVisitsBetweenDate($start_date = null, $end_date = null, $user_id = null)
     {
 
-        if ($start_date === null) {
-            $start_date = Carbon::today();
-        } else {
-            $start_date = Carbon::createFromFormat('m/d/Y h:i:s', $start_date . ' 00:00:00');
-        }
-        if ($end_date === null) {
-            $end_date = Carbon::tomorrow();
-        } else {
-            $end_date = Carbon::createFromFormat('m/d/Y h:i:s', $end_date . ' 00:00:00')->addDay()->subSecond();
-        }
-        $visits = Visit::whereBetween('visited_date', [$start_date, $end_date]);
+        $ranges = $this->getDateRanges($start_date, $end_date);
+
+        $visits = Visit::whereBetween('visited_date', $ranges);
 
 
         if ($user_id !== null) {
