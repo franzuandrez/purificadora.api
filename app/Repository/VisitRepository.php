@@ -323,6 +323,8 @@ class VisitRepository
                     $payment->employee_id = Auth::user()->employee->employee_id;
                     $payment->customer_id = $debt->customer_id;
                     $payment->visit_id = $this->getVisit()->visit_id;
+                    $payment->product_id = $debt->product_id;
+                    $payment->price = $debt->price;
                     $payment->save();
                 }
                 if (intval($debt->quantity) == ($quantity + $item['quantity'])) {
