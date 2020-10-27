@@ -228,6 +228,10 @@ class VisitRepository
         $visit->visited_date = Carbon::now();
         $visit->save();
 
+        $customer = $this->getCustomer();
+        $customer->last_date_visited = Carbon::now();
+        $customer->save();
+
         $this->visit = $visit;
         $this->setCarboyMovement($this->getBorrowedCarboys(), $this->getObservations());
         $this->setCarboyMovement($this->getReturnedCarboys(), $this->getObservations(), 'R');
