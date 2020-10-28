@@ -88,7 +88,7 @@ class SummaryRepository
             $start_date = Carbon::createFromFormat('m/d/Y h:i:s', $start_date . ' 00:00:00');
         }
         if ($end_date === null) {
-            $end_date = Carbon::tomorrow();
+            $end_date = Carbon::tomorrow()->subSecond();
         } else {
             $end_date = Carbon::createFromFormat('m/d/Y h:i:s', $end_date . ' 00:00:00')->addDay()->subSecond();
         }
@@ -102,7 +102,7 @@ class SummaryRepository
     {
         $ranges = $this->getDateRanges($start_date, $end_date);
 
-
+        dd($ranges);
         $total = UpcomingVisit::whereBetween('next_visit_date', $ranges)
             ->groupBy('customer_id');
 
