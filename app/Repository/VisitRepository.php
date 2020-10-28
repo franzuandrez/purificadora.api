@@ -181,23 +181,37 @@ class VisitRepository
     {
 
         $search = $request->get('search');
+        $start_date = $request->get('start_date');
+        $end_date = $request->get('end_date');
+        $employee_id = $request->get('employee_id');
+        $reason_id = $request->get('reason_id');
 
-        return (Visit::with('customer')
+        $visits = Visit::with('customer')
             ->with('employee')
             ->with('reason')
+            ->select('visit.*')
+            ->join('customer', 'customer.customer_id', '=', 'visit.customer_id')
+            ->join('employee', 'employee.employee_id', '=', 'visit.employee_id')
+            ->join('visit_reason', 'visit_reason.reason_id', '=', 'visit.reason_id')
             ->where(function ($query) use ($search) {
-                return $query->orwhereHas('employee', function (Builder $q) use ($search) {
-                    $q->orwhere('name', 'like', '%' . $search . '%');
-                })->orwhereHas('reason', function (Builder $q) use ($search) {
-                    $q->orwhere('description', 'like', '%' . $search . '%');
-                })->orwhereHas('customer', function (Builder $q) use ($search) {
-                    $q->orwhere('name', 'like', '%' . $search . '%')
-                        ->orwhere('last_name', 'like', '%' . $search . '%')
-                        ->orwhere('nickname', 'like', '%' . $search . '%');
-                });
+                return $query->orWhere('customer.name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('customer.nickname', 'LIKE', '%' . $search . '%')
+                    ->orWhere('employee.name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('employee.last_name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('visit_reason.description', 'LIKE', '%' . $search . '%');
             })
-            ->orderBy('visited_date', 'desc')
-            ->paginate(15));
+            ->orderBy('visited_date', 'desc');
+        if ($reason_id != "") {
+            $visits = $visits->where('visit.reason_id', $reason_id);
+        }
+        if ($employee_id != "") {
+            $visits = $visits->where('visit.employee_id', $employee_id);
+        }
+
+        $visits = $visits->paginate(20);
+
+        return ($visits);
+
     }
 
 
