@@ -59,25 +59,17 @@ class SalesRepository
             $end_date = Carbon::tomorrow()->subSecond();
         }
 
-        if ($end_date->diffInDays($start_date) < 6) {
-            $start_date = $end_date->copy()->subDays(6);
 
+        if ($end_date->diffInHours($start_date) <= 24) {
+            $start_date = $end_date->copy()->subDays(1)->addSecond();
+            $interval = $this->getByHourInterval($start_date, $end_date);
+        } else {
+            $start_date = $end_date->copy()->subDays($end_date->diffInDays($start_date) + 1)->addSecond();
+            $interval = $this->getByDayInterval($start_date, $end_date);
         }
 
-        $period = collect(CarbonPeriod::create($start_date, $end_date)->toArray());
 
-        $sales_between_dates = Visit::with('sales')
-            ->with('employee')
-            ->select(\DB::raw("date_format(visited_date,'%d/%m/%Y') as visited_at"), 'visit.*')
-            ->whereBetween('visited_date', [$start_date, $end_date])
-            ->where('reason_id', 2)
-            ->get();
-
-
-        $grouped_by_date = $sales_between_dates->groupBy('visited_at');
-
-
-        $grouped_by_user = $sales_between_dates->groupBy('employee_id')->map(function ($item) {
+        $grouped_by_user = $interval['sales_between_dates']->groupBy('employee_id')->map(function ($item) {
             return [
                 "total" => $item->filter(function ($ele) {
                     return $ele->sales != null;
@@ -85,20 +77,7 @@ class SalesRepository
                 "name" => $item->first()->employee->name
             ];
         });
-
-
-        $linear_graphic = ($period->map(function ($item) use ($grouped_by_date) {
-            $total = 0;
-            if ($grouped_by_date->has($item->format('d/m/Y'))) {
-                $total = $grouped_by_date->get($item->format('d/m/Y'))
-                    ->filter(function ($ele) {
-                        return $ele->sales != null;
-                    })->sum('sales.total');
-            }
-            return [
-                $item->format('d/m/Y') => $total
-            ];
-        }));
+        $linear_graphic = $interval['linear_graphic'];
 
 
         $last_sales = Sales::without('detail')
@@ -125,6 +104,68 @@ class SalesRepository
             ->with('visit.employee')
             ->with('visit.customer')
             ->findOrFail($id);
+    }
+
+    private function getByHourInterval($start_date, $end_date)
+    {
+        $period = collect(CarbonPeriod::create($start_date, $end_date)->setDateInterval(CarbonInterval::hour(1))->toArray());
+
+        $sales_between_dates = Visit::with('sales')
+            ->with('employee')
+            ->select(\DB::raw("date_format(visited_date,'%H%p') as visited_at"), 'visit.*')
+            ->whereBetween('visited_date', [$start_date, $end_date])
+            ->where('reason_id', 2)
+            ->get();
+
+
+        $grouped_by_date = $sales_between_dates->groupBy('visited_at');
+        $linear_graphic = ($period->map(function ($item) use ($grouped_by_date) {
+            $total = 0;
+            if ($grouped_by_date->has(strtoupper($item->format('Ha')))) {
+                $total = $grouped_by_date->get(strtoupper($item->format('Ha')))
+                    ->filter(function ($ele) {
+                        return $ele->sales != null;
+                    })->sum('sales.total');
+            }
+            return [
+                strtoupper($item->format('Ha')) => $total
+            ];
+        }));
+        return [
+            'linear_graphic' => $linear_graphic,
+            'sales_between_dates' => $sales_between_dates
+        ];
+    }
+
+    private function getByDayInterval($start_date, $end_date)
+    {
+        $period = collect(CarbonPeriod::create($start_date, $end_date)->setDateInterval(CarbonInterval::day(1))->toArray());
+
+        $sales_between_dates = Visit::with('sales')
+            ->with('employee')
+            ->select(\DB::raw("date_format(visited_date,'%d%b') as visited_at"), 'visit.*')
+            ->whereBetween('visited_date', [$start_date, $end_date])
+            ->where('reason_id', 2)
+            ->get();
+
+
+        $grouped_by_date = $sales_between_dates->groupBy('visited_at');
+        $linear_graphic = ($period->map(function ($item) use ($grouped_by_date) {
+            $total = 0;
+            if ($grouped_by_date->has($item->format('dM'))) {
+                $total = $grouped_by_date->get($item->format('dM'))
+                    ->filter(function ($ele) {
+                        return $ele->sales != null;
+                    })->sum('sales.total');
+            }
+            return [
+                $item->format('dM') => $total
+            ];
+        }));
+        return [
+            'linear_graphic' => $linear_graphic,
+            'sales_between_dates' => $sales_between_dates
+        ];
     }
 
 
