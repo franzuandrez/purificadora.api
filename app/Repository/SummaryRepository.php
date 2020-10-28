@@ -102,7 +102,6 @@ class SummaryRepository
     {
         $ranges = $this->getDateRanges($start_date, $end_date);
 
-        dd($ranges);
         $total = UpcomingVisit::whereBetween('next_visit_date', $ranges)
             ->groupBy('customer_id');
 
