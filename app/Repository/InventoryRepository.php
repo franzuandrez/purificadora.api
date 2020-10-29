@@ -18,7 +18,7 @@ class InventoryRepository
 
         $movements = Inventory::with('visit_document')
             ->with('visit_document.customer')
-            ->orderByDesc('id')
+            ->orderByDesc('movement_date')
             ->get();
 
 
@@ -42,7 +42,7 @@ class InventoryRepository
 
 
         return [
-            'movements' => $movements->take(10),
+            'movements' => $movements->take(7),
             'with_customers' => $with_customers,
             'in_store' => ($in_store),
             'customers' => $customers
