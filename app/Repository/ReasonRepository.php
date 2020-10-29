@@ -13,8 +13,19 @@ class ReasonRepository
     public function all()
     {
 
-        return VisitReason::where('mobile_show', 1)->get();
+        return VisitReason::where('mobile_show', 1)
+            ->orderBy('is_system', 'asc')
+            ->get();
 
+    }
+
+    public function web(Request $request)
+    {
+
+        $search = $request->get('search');
+        return VisitReason::  where('description', 'LIKE', '%' . $search . '%')
+            ->orderBy('is_system', 'asc')
+            ->get();
     }
 
     public function storeFromRequest(Request $request)

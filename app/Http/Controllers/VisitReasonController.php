@@ -27,12 +27,26 @@ class VisitReasonController extends Controller
         ]);
     }
 
+    public function web(Request $request)
+    {
+
+        return response([
+            'success' => true,
+            'data' => $this->reasonRepository->web($request)
+        ]);
+    }
 
     public function store(Request $request)
     {
 
 
-        $visitReason = $this->reasonRepository->storeFromRequest($request);
+        if ($request->id == "") {
+            $visitReason = $this->reasonRepository->storeFromRequest($request);
+        } else {
+            $visitReason = $this->reasonRepository->updateFromRequest($request, $request->id);
+        }
+
+
         return response([
             'success' => true,
             'data' => $visitReason
@@ -50,7 +64,7 @@ class VisitReasonController extends Controller
         ]);
     }
 
-    public function show( $id)
+    public function show($id)
     {
 
         $visitReason = $this->reasonRepository->findById($id);

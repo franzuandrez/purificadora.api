@@ -53,6 +53,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
 
     Route::get('visit_reason', 'VisitReasonController@index');
+    Route::get('visit_reason/web', 'VisitReasonController@web');
     Route::post('visit_reason', 'VisitReasonController@store');
     Route::patch('visit_reason/{id}', 'VisitReasonController@update');
     Route::get('visit_reason/{id}', 'VisitReasonController@show');
