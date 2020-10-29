@@ -16,64 +16,66 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:api']], function () {
 
-Route::get('/users', 'UsersController@index');
+    Route::get('/users', 'UsersController@index');
 
-Route::get('/users/{id}', 'UsersController@show');
+    Route::get('/users/{id}', 'UsersController@show');
 
-Route::patch('/users/{id}', 'UsersController@update');
-
-
-Route::post('/logout', 'UsersController@logout');
+    Route::patch('/users/{id}', 'UsersController@update');
 
 
-Route::post('/register', 'UsersController@register');
-Route::get('customers', 'CustomerController@index')->name('customer.index');
-
-Route::get('customer/{id}', 'CustomerController@show')->name('customer.show');
-Route::post('customer', 'CustomerController@store')->name('customer.store');
+    Route::post('/logout', 'UsersController@logout');
 
 
-Route::get('wallets', 'CustomerWalletController@index')->name('wallets');
+    Route::post('/register', 'UsersController@register');
+    Route::get('customers', 'CustomerController@index')->name('customer.index');
 
-Route::post('wallets', 'CustomerWalletController@store')->name('wallets.store');
-
-
-Route::post('wallets/associate', 'CustomerWalletController@associate');
-
-Route::patch('wallets/{id}', 'CustomerWalletController@update')->name('wallets.update');
-
-Route::get('wallets/{id}', 'CustomerWalletController@show')->name('wallets.show');
-
-Route::get('all_wallets', 'CustomerWalletController@wallets');
+    Route::get('customer/{id}', 'CustomerController@show')->name('customer.show');
+    Route::post('customer', 'CustomerController@store')->name('customer.store');
 
 
-Route::get('products', 'ProductController@index')->name('products');
-Route::post('products', 'ProductController@store')->name('products.store');
-Route::get('products/{id}', 'ProductController@show')->name('products.show');
+    Route::get('wallets', 'CustomerWalletController@index')->name('wallets');
+
+    Route::post('wallets', 'CustomerWalletController@store')->name('wallets.store');
 
 
-Route::get('visit_reason', 'VisitReasonController@index');
-Route::post('visit_reason', 'VisitReasonController@store');
-Route::patch('visit_reason/{id}', 'VisitReasonController@update');
-Route::get('visit_reason/{id}', 'VisitReasonController@show');
+    Route::post('wallets/associate', 'CustomerWalletController@associate');
+
+    Route::patch('wallets/{id}', 'CustomerWalletController@update')->name('wallets.update');
+
+    Route::get('wallets/{id}', 'CustomerWalletController@show')->name('wallets.show');
+
+    Route::get('all_wallets', 'CustomerWalletController@wallets');
 
 
-Route::post('sales', 'SalesController@store')->name('sales.store');
-Route::get('sales', 'SalesController@summary')->name('sales');
-Route::get('sales/{id}', 'SalesController@show')->name('sales.show');
-
-Route::get('debts_by_customer/{id}', 'DebtsController@show')->name('debts.show');
-Route::post('debts/pay', 'DebtsController@pay')->name('debts.pay');
-
-Route::get('visits', 'VisitsController@index')->name('visits');
-Route::post('visits', 'VisitsController@store')->name('visits.store');
-Route::get('visits/{id}', 'VisitsController@show')->name('visits.show');
+    Route::get('products', 'ProductController@index')->name('products');
+    Route::post('products', 'ProductController@store')->name('products.store');
+    Route::get('products/{id}', 'ProductController@show')->name('products.show');
 
 
-Route::get('summary', 'SummaryController@index');
-Route::get('inventory', 'InventoryController@index');
+    Route::get('visit_reason', 'VisitReasonController@index');
+    Route::post('visit_reason', 'VisitReasonController@store');
+    Route::patch('visit_reason/{id}', 'VisitReasonController@update');
+    Route::get('visit_reason/{id}', 'VisitReasonController@show');
 
-Route::get('debts', 'DebtsController@summary')->name('debts.summary');
+
+    Route::post('sales', 'SalesController@store')->name('sales.store');
+    Route::get('sales', 'SalesController@summary')->name('sales');
+    Route::get('sales/{id}', 'SalesController@show')->name('sales.show');
+
+    Route::get('debts_by_customer/{id}', 'DebtsController@show')->name('debts.show');
+    Route::post('debts/pay', 'DebtsController@pay')->name('debts.pay');
+
+    Route::get('visits', 'VisitsController@index')->name('visits');
+    Route::post('visits', 'VisitsController@store')->name('visits.store');
+    Route::get('visits/{id}', 'VisitsController@show')->name('visits.show');
+
+
+    Route::get('summary', 'SummaryController@index');
+    Route::get('inventory', 'InventoryController@index');
+
+    Route::get('debts', 'DebtsController@summary')->name('debts.summary');
+
+    Route::get('upcoming_visits', 'UpcomingVisitsController@index')->name('upcoming_visits');
 
 });
 
